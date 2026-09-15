@@ -4,8 +4,8 @@
   "description": "따뜻한 하루를 기록하는 일기 앱",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#FEFAD5",
-  "theme_color": "#FEFAD5",
+  "background_color": "#FFFBEF",
+  "theme_color": "#FFFBEF",
   "icons": [
     {
       "src": "icon-192.png",

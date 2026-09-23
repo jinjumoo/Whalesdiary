@@ -958,7 +958,10 @@ function renderTodoList(){
   } else {
     el.innerHTML = todoItems.map(t => `
       <div class="todo-item${t.done ? ' done' : ''}" data-id="${t.id}">
-        <button class="todo-check" data-toggle="${t.id}"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5 L8 14.5 L16 4.5" stroke="#C0503C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-3 10 10)"/></svg></button>
+        <button class="todo-check" data-toggle="${t.id}"><svg viewBox="0 0 20 20" fill="none">
+          <path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" transform="rotate(-4 10 10)"/>
+          <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
+        </svg></button>
         <div class="todo-text">${escapeHtml(t.text)}</div>
         <button class="todo-del" data-del="${t.id}">✕</button>
       </div>

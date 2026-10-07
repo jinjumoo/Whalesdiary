@@ -494,10 +494,22 @@
     font-size: 15.5px;
     color: var(--ink);
     word-break: break-word;
+    cursor: text;
   }
   .todo-item.done .todo-text{
     color: var(--ink-soft);
     text-decoration: line-through;
+  }
+  .todo-edit-input{
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--ink);
+    padding: 0 0 2px 0;
+    font-family: 'EB Garamond', 'Song Myung', Georgia, serif;
+    font-size: 15.5px;
+    color: var(--ink);
+    outline: none;
   }
   .todo-del{
     background: none;
@@ -1001,7 +1013,7 @@ function renderTodoList(){
           <path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" transform="rotate(-4 10 10)"/>
           <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
         </svg></button>
-        <div class="todo-text">${escapeHtml(t.text)}</div>
+        <div class="todo-text" data-edit="${t.id}">${escapeHtml(t.text)}</div>
         <button class="todo-del" data-del="${t.id}">✕</button>
       </div>
     `).join('');
@@ -1021,6 +1033,39 @@ function renderTodoList(){
       todoItems = todoItems.filter(t => t.id !== id);
       renderTodoList();
       saveTodos();
+    };
+  });
+  el.querySelectorAll('[data-edit]').forEach(div => {
+    div.onclick = () => {
+      const id = div.dataset.edit;
+      const current = todoItems.find(t => t.id === id);
+      if(!current) return;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'todo-edit-input';
+      input.value = current.text;
+      div.replaceWith(input);
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+
+      let done = false;
+      const commit = () => {
+        if(done) return;
+        done = true;
+        const newText = input.value.trim();
+        if(newText){
+          todoItems = todoItems.map(t => t.id === id ? {...t, text: newText} : t);
+        } else {
+          todoItems = todoItems.filter(t => t.id !== id);
+        }
+        renderTodoList();
+        saveTodos();
+      };
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Enter'){ ev.preventDefault(); input.blur(); }
+        if(ev.key === 'Escape'){ done = true; renderTodoList(); }
+      });
     };
   });
 

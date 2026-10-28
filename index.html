@@ -915,6 +915,13 @@
   .cal-day.today .num-corner{ background:#FFE3A3; border:1px solid #BFAF9B; border-radius:8px; padding:0 4px; color:var(--ink); font-weight:700; }
   .cal-day.has-entry.selected{ outline:1.5px dashed #BFAF9B; outline-offset:-3px; border-radius:10px; }
   .cal-day .pdot{ position:absolute; bottom:3px; left:50%; width:5px; height:5px; border-radius:50%; background:#B6432E; transform:translateX(-50%); }
+
+  .cal-card{ padding:10px 8px 8px; }
+  .cal-card .cal-day{ height:48px; }
+  .cal-card .cal-day .stamp-img{ height:30px; }
+  .cal-card .cal-title{ font-size:17px; }
+  .cal-card .cal-grid{ margin-bottom:6px; }
+  .cal-card .cal-legend{ margin-bottom:2px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -947,8 +954,7 @@
 
   <div class="tab-bar">
     <button class="tab-btn active" id="tabHomeBtn">오늘</button>
-    <button class="tab-btn" id="tabCalendarBtn">캘린더</button>
-    <button class="tab-btn" id="tabListBtn">목록</button>
+    <button class="tab-btn" id="tabListBtn">일기</button>
     <button class="tab-btn" id="tabTodoBtn">할일</button>
   </div>
 
@@ -965,6 +971,21 @@
             <div class="week-stamps" id="homeWeek"></div>
           </div>
         </div>
+        <div class="home-card cal-card">
+          <div class="cal-header">
+            <button class="cal-nav" id="calPrev">‹</button>
+            <div class="cal-title" id="calTitle">2026년 10월</div>
+            <button class="cal-nav" id="calNext">›</button>
+          </div>
+          <div class="cal-weekdays">
+            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <span><img src="" alt="">일기 쓴 날</span>
+            <span><i class="legend-dot"></i>할일 남음</span>
+          </div>
+        </div>
         <div class="home-card">
           <div class="home-head"><b>오늘의 할일</b><span id="homeTodoMeta"></span></div>
           <div class="bar"><div id="homeTodoBar" style="width:0%"></div></div>
@@ -974,23 +995,6 @@
           <div class="home-head"><b>오늘의 일기</b><span id="homeEntryMeta"></span></div>
           <div id="homeEntryBody"></div>
         </div>
-      </div>
-
-      <div class="tab-swipe-panel" id="calendarView">
-        <div class="cal-header">
-          <button class="cal-nav" id="calPrev">‹</button>
-          <div class="cal-title" id="calTitle">2026년 9월</div>
-          <button class="cal-nav" id="calNext">›</button>
-        </div>
-        <div class="cal-weekdays">
-          <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
-        </div>
-        <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-legend">
-          <span><img src="" alt="">일기 쓴 날</span>
-          <span><i class="legend-dot"></i>할일 남음</span>
-        </div>
-        <div class="cal-detail" id="calDetail"></div>
       </div>
 
       <div class="tab-swipe-panel" id="listView">
@@ -1535,30 +1539,16 @@ function renderCalendar(){
     const hasEntry = entryDates.has(ds);
     const pending = ds <= todayDs && (todosByDate[ds] || []).some(t => !t.done);
     const cell = document.createElement('div');
-    cell.className = 'cal-day' + (hasEntry ? ' has-entry' : '') + (ds === todayDs ? ' today' : '') + (ds === selectedDate ? ' selected' : '');
+    cell.className = 'cal-day' + (hasEntry ? ' has-entry' : '') + (ds === todayDs ? ' today' : '');
     cell.innerHTML = hasEntry
       ? `<img class="stamp-img" src="${WHALE_STAMP_SRC}" alt=""><span class="num-corner">${d}</span>${pending ? '<i class="pdot"></i>' : ''}`
       : `<span class="day-num">${d}</span>${pending ? '<span class="day-mark"><i></i></span>' : ''}`;
-    cell.onclick = () => { selectedDate = ds; renderCalendar(); };
+    cell.onclick = () => {
+      const existing = activeEntries().find(e=>e.date===ds);
+      openEditor(existing ? existing.id : null, ds);
+    };
     grid.appendChild(cell);
   }
-  renderDayDetail();
-}
-
-function renderDayDetail(){
-  const box = $('calDetail');
-  if(!box) return;
-  const e = activeEntries().find(x => x.date === selectedDate);
-  const mood = e ? (MOODS.find(m=>m.key===e.mood) || MOODS[0]) : null;
-  let html = `<div class="detail-head"><b>${fmtDate(selectedDate)}</b><span>${e ? `${mood.emoji} ${mood.label}` : '기록 없음'}</span></div>`;
-  if(e){
-    html += `<div class="detail-title">${escapeHtml(e.title || '제목 없음')}</div><div class="detail-text">${escapeHtml(e.body || '')}</div>`;
-  } else {
-    html += `<div class="detail-text">이 날의 일기가 아직 없어요.</div>`;
-  }
-  html += `<div class="detail-actions"><button class="home-btn" id="detailWriteBtn">${e ? '이어서 쓰기' : '이 날 쓰기'}</button>${e && e.photo ? '<span class="detail-chip">사진 1</span>' : ''}</div>`;
-  box.innerHTML = html;
-  $('detailWriteBtn').onclick = () => openEditor(e ? e.id : null, selectedDate);
 }
 
 function renderMoodPick(){
@@ -1669,12 +1659,11 @@ function closeEditor(){
   editingId = null;
 }
 
-const TAB_ORDER = ['home', 'calendar', 'list', 'todo'];
+const TAB_ORDER = ['home', 'list', 'todo'];
 let tabSwipeLock = false;
 
 function updateTabButtons(tab){
   $('tabHomeBtn').classList.toggle('active', tab === 'home');
-  $('tabCalendarBtn').classList.toggle('active', tab === 'calendar');
   $('tabListBtn').classList.toggle('active', tab === 'list');
   $('tabTodoBtn').classList.toggle('active', tab === 'todo');
 }
@@ -1690,7 +1679,6 @@ function switchTab(tab){
 }
 
 $('tabHomeBtn').onclick = () => switchTab('home');
-$('tabCalendarBtn').onclick = () => switchTab('calendar');
 $('tabListBtn').onclick = () => switchTab('list');
 $('tabTodoBtn').onclick = () => switchTab('todo');
 

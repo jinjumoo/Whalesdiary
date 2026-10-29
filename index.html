@@ -825,7 +825,7 @@
 
   /* ===== D안 시안 반영 ===== */
   body{ font-family:'Gowun Batang',serif; }
-  .eyebrow{ font-family:'Noto Sans KR',sans-serif; letter-spacing:.22em; font-size:11px; }
+  .eyebrow{ font-family:'Gowun Batang',serif; letter-spacing:.22em; font-size:12px; font-weight:400; }
   .tab-bar{ gap:5px; }
   .tab-btn{ border:1.5px solid #D9CDBB; border-bottom:none; padding:8px 14px 10px; font-size:15px; font-weight:400; color:#7A6A53; }
   .tab-btn.active{ border-color:#BFAF9B; background:#FFE3A3; color:var(--ink); font-weight:700; padding-bottom:11px; }
@@ -922,6 +922,19 @@
   .cal-card .cal-title{ font-size:17px; }
   .cal-card .cal-grid{ margin-bottom:6px; }
   .cal-card .cal-legend{ margin-bottom:2px; }
+
+  /* 헤더 B안: 큰 아이콘 + 3줄 텍스트 세로 중앙, 동기화/로그아웃은 아래 한 줄 */
+  header{ margin-bottom:0; padding-bottom:16px; align-items:center; gap:14px; }
+  header .logo-mark{ width:clamp(64px,22vw,84px); opacity:1; }
+  .header-meta{ display:flex; justify-content:space-between; align-items:center; margin:8px 2px 22px; }
+  .header-meta .sync-status, .header-meta .logout-link{ margin-top:0; font-family:'Noto Sans KR',sans-serif; }
+
+  /* 헤더 정렬 정리 */
+  header .header-text{ display:flex; flex-direction:column; align-items:flex-start; }
+  header .eyebrow{ line-height:1; margin:0; }
+  header h1{ margin:8px 0 0; line-height:1.1; }
+  header .sub{ margin:8px 0 0; line-height:1.2; }
+  .header-meta{ margin:8px 0 22px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -947,10 +960,12 @@
       <div class="eyebrow">WHALE'S DIARY</div>
       <h1>고래의 하루</h1>
       <div class="sub" id="todayLabel">따뜻한 하루를 기록해요</div>
-      <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.29-a</span></div>
-      <button class="logout-link" id="logoutBtn">로그아웃</button>
     </div>
   </header>
+  <div class="header-meta">
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.29-c</span></div>
+    <button class="logout-link" id="logoutBtn">로그아웃</button>
+  </div>
 
   <div class="tab-bar">
     <button class="tab-btn active" id="tabHomeBtn">오늘</button>

@@ -941,6 +941,19 @@
   @media (min-width:700px){ .sheet{ max-width:640px; padding-left:clamp(14px,5vw,24px); padding-right:clamp(14px,5vw,24px); } }
   @media (min-width:1100px){ .sheet{ max-width:720px; } }
   @media (min-width:1400px){ .sheet{ max-width:820px; } }
+
+  /* 할일: 날짜 이동 / 순서 편집 */
+  .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .todo-datebar .todo-date{ margin:0; }
+  .todo-nav{ background:none; border:none; font-size:24px; color:#7A6A53; padding:0 8px; cursor:pointer; font-family:inherit; }
+  .todo-datepick{ position:relative; display:inline-block; cursor:pointer; }
+  .todo-datepick .todo-date{ border-bottom:1.5px dotted #BFAF9B; padding-bottom:2px; }
+  .todo-datepick .todo-date small{ font-size:11px; color:#9a8c78; margin-left:2px; }
+  .todo-datepick input{ position:absolute; inset:0; opacity:0; width:100%; height:100%; border:none; cursor:pointer; }
+  .todo-tools{ display:flex; align-items:center; justify-content:flex-end; gap:16px; margin-bottom:10px; font-family:'Noto Sans KR',sans-serif; }
+  .todo-tool-btn{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; background:none; border:none; padding:4px 2px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+  .todo-grip{ flex-shrink:0; width:30px; height:34px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
+  .todo-item.dragging{ position:relative; z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -969,7 +982,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.29-d</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.29-f</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1030,7 +1043,15 @@
       </div>
 
       <div class="tab-swipe-panel" id="todoView">
-        <div class="todo-date" id="todoDate">9월 17일 목요일</div>
+        <div class="todo-datebar">
+          <button class="todo-nav" id="todoPrev" aria-label="전날">‹</button>
+          <label class="todo-datepick"><div class="todo-date" id="todoDate">9월 17일 목요일</div><input type="date" id="todoPick" aria-label="날짜 선택"></label>
+          <button class="todo-nav" id="todoNext" aria-label="다음날">›</button>
+        </div>
+        <div class="todo-tools">
+          <button class="todo-tool-btn" id="todoTodayBtn" style="display:none;">오늘로</button>
+          <button class="todo-tool-btn" id="todoReorderBtn">순서 편집</button>
+        </div>
         <div class="todo-add-row">
           <input type="text" id="todoInput" placeholder="오늘 할 일을 입력하세요">
           <button class="todo-add-btn" id="todoAddBtn">+</button>
@@ -1204,6 +1225,8 @@ function subscribeEntries(){
 }
 
 let todosByDate = {};
+let viewDate = todayStr();
+let todoReorder = false;
 const keptDone = new Set(); // 이월 항목을 방금 체크했을 때 화면에 잠시 남겨두기 위한 키
 
 function subscribeTodos(){
@@ -1237,8 +1260,8 @@ function setItems(date, items){
 }
 function saveTodos(){ setItems(todayStr(), todoItems); }
 
-function overdueGroups(){
-  const t = todayStr();
+function overdueGroups(ref){
+  const t = ref || todayStr();
   return Object.keys(todosByDate).filter(dt => dt < t).sort().reverse().map(dt => ({
     date: dt,
     items: todosByDate[dt].filter(it => !it.done || keptDone.has(dt + '|' + it.id))
@@ -1253,6 +1276,7 @@ function todoRowHtml(date, t){
         <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
       </svg></button>
       <div class="todo-text" data-edit="${escapeAttr(t.id)}" data-date="${date}">${escapeHtml(t.text)}</div>
+      ${todoReorder ? `<span class="todo-grip" data-grip="${escapeAttr(t.id)}" data-date="${date}" aria-label="끌어서 순서 변경"><svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg></span>` : ''}
       <button class="todo-del" data-del="${escapeAttr(t.id)}" data-date="${date}">✕</button>
     </div>`;
 }
@@ -1348,23 +1372,36 @@ function renderHome(){
   $('homeEntryBtn').onclick = () => openEditor(todayEntry ? todayEntry.id : null, ts);
 }
 
+function fmtViewDate(ds){
+  const d = new Date(ds + 'T00:00:00');
+  const days = ['일','월','화','수','목','금','토'];
+  return `${d.getMonth()+1}월 ${d.getDate()}일 ${days[d.getDay()]}요일`;
+}
+
 function renderTodoList(){
-  todoItems = getItems(todayStr());
+  const vd = viewDate;
+  const isToday = vd === todayStr();
+  todoItems = getItems(vd);
+  $('todoDate').innerHTML = escapeHtml(fmtViewDate(vd)) + ' <small>▾</small>';
+  $('todoPick').value = vd;
+  $('todoTodayBtn').style.display = isToday ? 'none' : 'inline-block';
+  $('todoReorderBtn').textContent = todoReorder ? '완료' : '순서 편집';
+  $('todoInput').placeholder = isToday ? '오늘 할 일을 입력하세요' : `${fmtViewDate(vd)} 할 일을 입력하세요`;
   const el = $('todoList');
   let html = '';
-  const groups = overdueGroups();
+  const groups = overdueGroups(vd);
   if(groups.length){
     html += `<div class="todo-carry-title">이어서 할 일</div>`;
     groups.forEach(g => {
       html += `<div class="todo-carry-date">${fmtDate(g.date)}에서 이월</div>`;
       html += g.items.map(t => todoRowHtml(g.date, t)).join('');
     });
-    html += `<div class="todo-carry-title">오늘의 할 일</div>`;
+    html += `<div class="todo-carry-title">${isToday ? '오늘의 할 일' : '이 날의 할 일'}</div>`;
   }
   if(todoItems.length === 0){
-    html += `<div class="empty"><p>오늘 할 일을 추가해보세요.</p></div>`;
+    html += `<div class="empty"><p>${isToday ? '오늘' : '이 날'} 할 일을 추가해보세요.</p></div>`;
   } else {
-    html += todoItems.map(t => todoRowHtml(todayStr(), t)).join('');
+    html += todoItems.map(t => todoRowHtml(vd, t)).join('');
   }
   el.innerHTML = html;
 
@@ -1372,9 +1409,47 @@ function renderTodoList(){
     btn.onclick = () => {
       const id = btn.dataset.toggle, date = btn.dataset.date;
       const cur = getItems(date).find(t => t.id === id);
-      if(cur && date < todayStr() && !cur.done) keptDone.add(date + '|' + id);
+      if(cur && date < vd && !cur.done) keptDone.add(date + '|' + id);
       setItems(date, getItems(date).map(t => t.id === id ? {...t, done: !t.done} : t));
       renderTodoList();
+    };
+  });
+  el.querySelectorAll('[data-grip]').forEach(g => {
+    g.onpointerdown = (ev) => {
+      ev.preventDefault();
+      const row = g.closest('.todo-item'), date = g.dataset.date, id = g.dataset.grip;
+      const rows = [...el.querySelectorAll('.todo-item')].filter(r => r.dataset.date === date);
+      const from = rows.indexOf(row);
+      const tops = rows.map(r => r.offsetTop + r.offsetHeight/2);
+      const startY = ev.clientY, baseTop = row.offsetTop + row.offsetHeight/2;
+      let to = from;
+      row.classList.add('dragging');
+      try{ g.setPointerCapture(ev.pointerId); }catch(e){}
+      g.onpointermove = (e) => {
+        const dy = e.clientY - startY;
+        row.style.transform = `translateY(${dy}px) scale(1.02)`;
+        const c = baseTop + dy;
+        to = 0;
+        tops.forEach((t, k) => { if(c > t) to = k; });
+        if(c <= tops[0]) to = 0;
+        rows.forEach((r, k) => {
+          if(r === row) return;
+          let sh = 0;
+          if(from < to && k > from && k <= to) sh = -row.offsetHeight;
+          if(from > to && k >= to && k < from) sh = row.offsetHeight;
+          r.style.transition = 'transform .12s'; r.style.transform = sh ? `translateY(${sh}px)` : '';
+        });
+      };
+      const end = () => {
+        g.onpointermove = null; g.onpointerup = null; g.onpointercancel = null;
+        if(to !== from){
+          const arr = [...getItems(date)];
+          const i = arr.findIndex(t => t.id === id);
+          if(i >= 0){ const [m] = arr.splice(i, 1); arr.splice(to, 0, m); setItems(date, arr); }
+        }
+        renderTodoList();
+      };
+      g.onpointerup = end; g.onpointercancel = end;
     };
   });
   el.querySelectorAll('[data-del]').forEach(btn => {
@@ -1431,11 +1506,22 @@ function addTodo(){
   const input = $('todoInput');
   const text = input.value.trim();
   if(!text) return;
-  setItems(todayStr(), [...getItems(todayStr()), { id: Date.now().toString(), text, done: false }]);
+  setItems(viewDate, [...getItems(viewDate), { id: Date.now().toString(), text, done: false }]);
   input.value = '';
   renderTodoList();
 }
 
+function shiftViewDate(n){
+  const d = new Date(viewDate + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  viewDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  renderTodoList();
+}
+$('todoPrev').onclick = () => shiftViewDate(-1);
+$('todoNext').onclick = () => shiftViewDate(1);
+$('todoPick').addEventListener('change', (ev) => { if(ev.target.value){ viewDate = ev.target.value; renderTodoList(); } });
+$('todoTodayBtn').onclick = () => { viewDate = todayStr(); renderTodoList(); };
+$('todoReorderBtn').onclick = () => { todoReorder = !todoReorder; renderTodoList(); };
 $('todoAddBtn').onclick = addTodo;
 $('todoInput').addEventListener('keydown', (ev) => {
   if(ev.key === 'Enter'){ ev.preventDefault(); addTodo(); }

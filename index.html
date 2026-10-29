@@ -947,7 +947,7 @@
       <div class="eyebrow">WHALE'S DIARY</div>
       <h1>고래의 하루</h1>
       <div class="sub" id="todayLabel">따뜻한 하루를 기록해요</div>
-      <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.28-d</span></div>
+      <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.29-a</span></div>
       <button class="logout-link" id="logoutBtn">로그아웃</button>
     </div>
   </header>
@@ -1675,9 +1675,12 @@ function openEditor(id, dateStr){
   $('tagInput').value = '';
   updateDateLabel();
   updateCharCount();
-  autoGrowTextarea($('entryBody'));
   $('photoInput').value = '';
   $('overlay').classList.add('open');
+  // 화면이 보이는 상태에서 높이를 계산해야 긴 글이 잘리지 않음
+  autoGrowTextarea($('entryBody'));
+  requestAnimationFrame(() => autoGrowTextarea($('entryBody')));
+  setTimeout(() => autoGrowTextarea($('entryBody')), 150);
 }
 
 function closeEditor(){
@@ -1722,7 +1725,8 @@ $('tabSwipeContainer').addEventListener('scroll', () => {
   }, 80);
 });
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', () => { if($('overlay').classList.contains('open')) autoGrowTextarea($('entryBody'));
+  
   const idx = TAB_ORDER.indexOf(activeTab);
   const container = $('tabSwipeContainer');
   if(container) container.scrollLeft = idx * container.clientWidth;

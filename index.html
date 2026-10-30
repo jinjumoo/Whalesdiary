@@ -985,11 +985,13 @@
   .tr-daynav b{ font-size:16px; color:var(--ink); }
   .tr-list{ position:relative; }
   .tr-item{ display:flex; align-items:center; gap:8px; padding:9px 2px; border-bottom:1px solid #E6DCC9; background:var(--bg); font-size:15px; color:var(--ink); }
-  .tr-item.dragging{ z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
+  .tr-item.dragging, .tr-ex.dragging{ z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
   .tr-item.done .tr-text{ color:#BFAF9B; text-decoration:line-through; }
   .tr-ibody{ flex:1; min-width:0; }
   .tr-time{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
   .tr-text{ word-break:break-word; cursor:text; }
+  .tr-time, .tr-cost, .tr-gt, .tr-ex .t span, .tr-ex b{ cursor:text; }
+  .ph{ color:#CDBFA8 !important; }
   .tr-cost{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; flex:none; }
   .tr-x{ background:none; border:none; color:#BFAF9B; font-size:15px; cursor:pointer; padding:4px; flex:none; }
   .tr-grip{ flex:none; width:24px; height:34px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
@@ -1007,10 +1009,10 @@
   .tr-catbar{ display:flex; align-items:center; gap:8px; margin:4px 0; font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; }
   .tr-catbar span:first-child{ width:34px; } .tr-catbar span:last-child{ width:78px; text-align:right; }
   .tr-catbar .tr-bar{ flex:1; margin:0; }
-  .tr-ex{ display:flex; align-items:center; gap:8px; padding:8px 2px; border-bottom:1px solid #E6DCC9; font-size:14px; color:var(--ink); }
+  .tr-ex{ background:var(--bg); display:flex; align-items:center; gap:8px; padding:8px 2px; border-bottom:1px solid #E6DCC9; font-size:14px; color:var(--ink); }
   .tr-ex .d{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; width:32px; flex:none; }
   .tr-ex .t{ flex:1; min-width:0; word-break:break-word; }
-  .tr-ex .c{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
+  .tr-ex .c{ cursor:pointer; text-decoration:underline dotted;  font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
   .tr-logcard{ border:1.5px solid #D9CDBB; border-radius:14px; padding:12px 14px; margin-bottom:10px; cursor:pointer; }
   .tr-logcard.empty-day{ border-style:dashed; text-align:center; color:#7A6A53; font-size:14px; }
   .tr-logcard .pv{ font-size:14px; line-height:1.6; color:#7A6A53; margin-top:6px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
@@ -1060,7 +1062,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.30-a</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.30-d</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1923,7 +1925,7 @@ function closeEditor(){
 // ===== 여행 기록 =====
 let trips = [];
 let unsubscribeTrips = null;
-let openTripId = null, tripSub = 'plan', tripDayIdx = 0, tripFocus = null, packLastCat = '서류', exDate = null;
+let openTripId = null, tripSub = 'plan', tripDayIdx = 0, tripFocus = null, packLastCat = '', exDate = null;
 let tripSheet = null;
 const EXP_CATS = ['숙박','교통','식비','쇼핑','기타'];
 const WD = ['일','월','화','수','목','금','토'];
@@ -2027,8 +2029,8 @@ function planHtml(t){
   const rows = items.map(it => `<div class="tr-item${it.done ? ' done' : ''}" data-id="${escA(it.id)}">
       <span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span>
       <button class="tr-ck" data-act="togPlan" data-id="${escA(it.id)}" aria-label="완료">${CHECK_SVG}</button>
-      <div class="tr-ibody">${it.time ? `<div class="tr-time">${esc(it.time)}</div>` : ''}<div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div></div>
-      ${it.cost ? `<span class="tr-cost">${fmtMoney(t, it.cost)}</span>` : ''}
+      <div class="tr-ibody"><div class="tr-time${it.time ? '' : ' ph'}" data-act="editPlanTime" data-id="${escA(it.id)}">${it.time ? esc(it.time) : '시간 +'}</div><div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div></div>
+      <span class="tr-cost${it.cost ? '' : ' ph'}" data-act="editPlanCost" data-id="${escA(it.id)}">${it.cost ? fmtMoney(t, it.cost) : '비용 +'}</span>
       <button class="tr-x" data-act="delPlan" data-id="${escA(it.id)}">✕</button></div>`).join('');
   return `<div class="tr-daynav"><button data-act="dayPrev" aria-label="전날">‹</button><b>${tripDayIdx + 1}일차 · ${fmtMD(ds)}</b><button data-act="dayNext" aria-label="다음날">›</button></div>
     <div class="tr-list" id="trPlanList">${rows || `<div class="tr-empty" style="padding:18px 0">이 날의 일정을 추가해보세요.</div>`}</div>
@@ -2042,12 +2044,12 @@ function packHtml(t){
   let h = `<div class="tr-box" style="padding:10px 14px"><div class="tr-row2"><span class="tr-sm">챙긴 물건 ${done} / ${pack.length}</span><span class="tr-sm">${pct}%</span></div><div class="tr-bar"><i style="width:${pct}%"></i></div></div>`;
   if(!pack.length) h += `<div class="tr-empty" style="padding:14px 0">챙길 물건을 추가해보세요.</div>`;
   cats.forEach(c => {
-    h += `<div class="tr-gt">${esc(c)}</div>`;
+    h += `<div class="tr-gt" data-act="editCat" data-cat="${escA(c)}">${esc(c)}</div>`;
     pack.filter(p => p.cat === c).forEach(p => {
       h += `<div class="tr-item${p.done ? ' done' : ''}"><button class="tr-ck" data-act="togPack" data-id="${escA(p.id)}" aria-label="챙김">${CHECK_SVG}</button><div class="tr-ibody"><div class="tr-text" data-act="editPack" data-id="${escA(p.id)}">${esc(p.text)}</div></div><button class="tr-x" data-act="delPack" data-id="${escA(p.id)}">✕</button></div>`;
     });
   });
-  h += `<div class="tr-add"><input id="pkCat" class="w84" list="pkCats" type="text" placeholder="분류" value="${escA(packLastCat)}"><datalist id="pkCats">${cats.map(c => `<option value="${escA(c)}">`).join('')}<option value="서류"><option value="옷"><option value="전자기기"><option value="세면·약"></datalist><input id="pkText" class="grow" type="text" placeholder="챙길 것"><button class="tr-addbtn" data-act="addPack">+</button></div>`;
+  h += `<div class="tr-add"><input id="pkCat" class="w84" style="width:110px" list="pkCats" type="text" placeholder="분류 예: 서류" value="${escA(packLastCat)}"><datalist id="pkCats">${cats.map(c => `<option value="${escA(c)}">`).join('')}<option value="서류"><option value="옷"><option value="전자기기"><option value="세면·약"></datalist><input id="pkText" class="grow" type="text" placeholder="챙길 것"><button class="tr-addbtn" data-act="addPack">+</button></div>`;
   return h;
 }
 function budgetHtml(t){
@@ -2064,12 +2066,14 @@ function budgetHtml(t){
     ${est ? `<div class="tr-sm" style="margin-top:6px">계획상 예상 비용 합계 ${fmtMoney(t, est)}</div>` : ''}</div>`;
   h += `<div class="tr-box" style="padding:8px 14px">${EXP_CATS.map((c, i) => `<div class="tr-catbar"><span>${c}</span><div class="tr-bar"><i style="width:${Math.round(sums[i] / mx * 100)}%"></i></div><span>${fmtMoney(t, sums[i])}</span></div>`).join('')}</div>`;
   h += `<div class="tr-section">지출 내역</div>`;
-  const sorted = [...exp].sort((a, b) => b.date.localeCompare(a.date));
+  const sorted = exp;
   if(!sorted.length) h += `<div class="tr-empty" style="padding:14px 0">아직 지출이 없어요.</div>`;
+  h += '<div class="tr-list" id="trExpList">';
   sorted.forEach(x => {
     const d = dObj(x.date);
-    h += `<div class="tr-ex"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="t">${esc(x.text)} <span class="c">${esc(x.cat)}</span></span><b>${fmtMoney(t, x.amount)}</b><button class="tr-x" data-act="delExp" data-id="${escA(x.id)}">✕</button></div>`;
+    h += `<div class="tr-ex"><span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span><span class="d" data-act="editExpDate" data-id="${escA(x.id)}" style="cursor:pointer">${d.getMonth()+1}/${d.getDate()}</span><span class="t"><span data-act="editExpText" data-id="${escA(x.id)}">${esc(x.text)}</span> <span class="c" data-act="editExpCat" data-id="${escA(x.id)}">${esc(x.cat)}</span></span><b data-act="editExpAmt" data-id="${escA(x.id)}">${fmtMoney(t, x.amount)}</b><button class="tr-x" data-act="delExp" data-id="${escA(x.id)}">✕</button></div>`;
   });
+  h += '</div>';
   h += `<div class="tr-add"><input id="exDate" class="w84" type="text" readonly data-act="pickExDate" value="${fmtMD(exDate).replace(/ \(.\)$/, '')}"><select id="exCat">${EXP_CATS.map(c => `<option>${c}</option>`).join('')}</select><span style="flex-basis:100%;height:0"></span><input id="exText" class="grow" type="text" placeholder="내용"><input id="exAmt" class="w84" type="text" inputmode="numeric" placeholder="금액"><button class="tr-addbtn" data-act="addExp">+</button></div>`;
   return h;
 }
@@ -2095,6 +2099,12 @@ function renderTrip(){
       saveTrip({ ...t, plan: { ...t.plan, [ds]: arr } });
     });
   }
+  if(t && tripSub === 'budget' && $('trExpList')){
+    enableDrag($('trExpList'), (from, to) => {
+      const arr = [...t.exp]; const [m] = arr.splice(from, 1); arr.splice(to, 0, m);
+      saveTrip({ ...t, exp: arr });
+    });
+  }
   if(tripFocus){ const f = $(tripFocus); if(f) f.focus(); tripFocus = null; }
 }
 
@@ -2102,8 +2112,8 @@ function enableDrag(container, onMove){
   container.querySelectorAll('[data-grip]').forEach(g => {
     g.onpointerdown = (ev) => {
       ev.preventDefault();
-      const row = g.closest('.tr-item');
-      const rows = [...container.querySelectorAll('.tr-item')];
+      const row = g.closest('.tr-item, .tr-ex');
+      const rows = [...container.querySelectorAll('.tr-item, .tr-ex')];
       const from = rows.indexOf(row);
       const tops = rows.map(r => r.offsetTop + r.offsetHeight / 2);
       const startY = ev.clientY, base = tops[from];
@@ -2132,13 +2142,16 @@ function enableDrag(container, onMove){
   });
 }
 
-function inlineEdit(el, cb){
-  const old = el.textContent;
+function inlineEdit(el, cb, opt){
+  opt = opt || {};
+  const old = opt.init !== undefined ? opt.init : el.textContent;
   const inp = document.createElement('input');
   inp.type = 'text'; inp.value = old; inp.className = 'tr-inline';
+  if(opt.num) inp.inputMode = 'numeric';
+  if(opt.ph) inp.placeholder = opt.ph;
   el.replaceWith(inp); inp.focus(); inp.select();
   let done = false;
-  const fin = (save) => { if(done) return; done = true; const v = inp.value.trim(); if(save && v && v !== old) cb(v); else renderTrip(); };
+  const fin = (save) => { if(done) return; done = true; const v = inp.value.trim(); if(save && v !== old && (v || opt.allowEmpty)) cb(v); else renderTrip(); };
   inp.onblur = () => fin(true);
   inp.onkeydown = (e) => { if(e.key === 'Enter') fin(true); if(e.key === 'Escape') fin(false); };
 }
@@ -2169,6 +2182,13 @@ function tripAct(act, el){
     case 'togPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, done: !x.done } : x) } });
     case 'delPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].filter(x => x.id !== id) } });
     case 'editPlan': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, text: v } : x) } }));
+    case 'editPlanTime': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, time: v } : x) } }), { init: (t.plan[ds].find(x => x.id === id) || {}).time || '', allowEmpty: true, ph: '예: 10:30' });
+    case 'editPlanCost': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, cost: toNum(v) } : x) } }), { init: String((t.plan[ds].find(x => x.id === id) || {}).cost || ''), allowEmpty: true, num: true, ph: '비용' });
+    case 'editCat': return inlineEdit(el, v => upd({ pack: t.pack.map(x => x.cat === el.dataset.cat ? { ...x, cat: v } : x) }));
+    case 'editExpText': return inlineEdit(el, v => upd({ exp: t.exp.map(x => x.id === id ? { ...x, text: v } : x) }));
+    case 'editExpAmt': return inlineEdit(el, v => { const n = toNum(v); if(n) upd({ exp: t.exp.map(x => x.id === id ? { ...x, amount: n } : x) }); else renderTrip(); }, { init: String((t.exp.find(x => x.id === id) || {}).amount || ''), num: true });
+    case 'editExpDate': return openDatePicker((t.exp.find(x => x.id === id) || {}).date, d => upd({ exp: t.exp.map(x => x.id === id ? { ...x, date: d } : x) }));
+    case 'editExpCat': { const cur = (t.exp.find(x => x.id === id) || {}).cat; const nx = EXP_CATS[(EXP_CATS.indexOf(cur) + 1) % EXP_CATS.length]; return upd({ exp: t.exp.map(x => x.id === id ? { ...x, cat: nx } : x) }); }
     case 'addPack': {
       const text = $('pkText').value.trim(), cat = $('pkCat').value.trim() || '기타';
       if(!text){ $('pkText').focus(); return; }

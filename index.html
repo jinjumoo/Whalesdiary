@@ -1052,7 +1052,7 @@
   .todo-datepick input{ position:absolute; inset:0; opacity:0; width:100%; height:100%; border:none; cursor:pointer; }
   .todo-tools{ display:flex; align-items:center; justify-content:flex-end; gap:16px; margin-bottom:10px; font-family:'Noto Sans KR',sans-serif; }
   .todo-tool-btn{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; background:none; border:none; padding:4px 2px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
-  .todo-grip{ flex-shrink:0; width:30px; height:34px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
+  .todo-grip{ flex-shrink:0; width:20px; height:24px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
   .todo-item.dragging{ position:relative; z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1082,7 +1082,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.32-a</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.32-b</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1140,7 +1140,6 @@
         </div>
         <div class="todo-tools">
           <button class="todo-tool-btn" id="todoTodayBtn" style="display:none;">오늘로</button>
-          <button class="todo-tool-btn" id="todoReorderBtn">순서 편집</button>
         </div>
         <div class="todo-add-row">
           <input type="text" id="todoInput" placeholder="오늘 할 일을 입력하세요">
@@ -1416,12 +1415,12 @@ function overdueGroups(ref){
 function todoRowHtml(date, t){
   return `
     <div class="todo-item${t.done ? ' done' : ''}" data-id="${escapeAttr(t.id)}" data-date="${date}">
+      <span class="todo-grip" data-grip="${escapeAttr(t.id)}" data-date="${date}" aria-label="끌어서 순서 변경"><svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg></span>
       <button class="todo-check" data-toggle="${escapeAttr(t.id)}" data-date="${date}"><svg viewBox="0 0 20 20" fill="none">
         <path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" transform="rotate(-4 10 10)"/>
         <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
       </svg></button>
       <div class="todo-text hasstar" data-edit="${escapeAttr(t.id)}" data-date="${date}"><span class="rstar-wrap" data-unstar="${escapeAttr(t.id)}" data-date="${date}">${t.star ? STAR_SVG : STAR_EMPTY}</span><span>${escapeHtml(t.text)}</span></div>
-      ${todoReorder ? `<span class="todo-grip" data-grip="${escapeAttr(t.id)}" data-date="${date}" aria-label="끌어서 순서 변경"><svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg></span>` : ''}
       <button class="todo-del" data-del="${escapeAttr(t.id)}" data-date="${date}">✕</button>
     </div>`;
 }
@@ -1530,7 +1529,7 @@ function renderTodoList(){
   $('todoDate').innerHTML = escapeHtml(fmtViewDate(vd)) + ' <small>▾</small>';
   $('todoPick').value = vd;
   $('todoTodayBtn').style.display = isToday ? 'none' : 'inline-block';
-  $('todoReorderBtn').textContent = todoReorder ? '완료' : '순서 편집';
+  document.querySelector('.todo-tools').style.display = isToday ? 'none' : 'flex';
   $('todoInput').placeholder = isToday ? '오늘 할 일을 입력하세요' : `${fmtViewDate(vd)} 할 일을 입력하세요`;
   const el = $('todoList');
   let html = '';
@@ -1669,7 +1668,6 @@ $('todoPrev').onclick = () => shiftViewDate(-1);
 $('todoNext').onclick = () => shiftViewDate(1);
 $('todoPick').addEventListener('click', () => openDatePicker(viewDate, ds => { viewDate = ds; renderTodoList(); }));
 $('todoTodayBtn').onclick = () => { viewDate = todayStr(); renderTodoList(); };
-$('todoReorderBtn').onclick = () => { todoReorder = !todoReorder; renderTodoList(); };
 $('todoAddBtn').onclick = addTodo;
 function syncStarBtn(){ const b = $('todoStarBtn'); b.classList.toggle('on', newStar); b.innerHTML = newStar ? STAR_SVG + '꼭' : '☆ 꼭'; }
 $('todoStarBtn').onclick = () => { newStar = !newStar; syncStarBtn(); $('todoInput').focus(); };

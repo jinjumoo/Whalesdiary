@@ -1029,7 +1029,8 @@
   .tr-catbar .tr-bar{ flex:1; margin:0; }
   .tr-ex{ background:var(--bg); display:flex; align-items:center; gap:8px; padding:8px 2px; border-bottom:1px solid #E6DCC9; font-size:14px; color:var(--ink); }
   .tr-ex .d{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; width:32px; flex:none; }
-  .tr-ex .t{ flex:1; min-width:0; word-break:break-word; }
+  .tr-ex .t{ flex:0 1 auto; min-width:0; word-break:break-word; }
+  .tr-ex .c{ margin:0 auto 0 4px; }
   .tr-ex .c{ cursor:pointer; text-decoration:underline dotted;  font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
   .tr-logcard{ border:1.5px solid #D9CDBB; border-radius:14px; padding:12px 14px; margin-bottom:10px; cursor:pointer; }
   .tr-logcard.empty-day{ border-style:dashed; text-align:center; color:#7A6A53; font-size:14px; }
@@ -1061,7 +1062,13 @@
     .todo-grip, .tr-grip{ width:14px; }
     .todo-grip svg, .tr-grip svg{ width:14px; height:14px; }
     .todo-del, .tr-x{ font-size:12px; padding:2px 0; opacity:.65; }
-    .tr-ex{ gap:6px; }
+    .tr-ex{ gap:2px 6px; flex-wrap:wrap; }
+    .tr-ex .tr-grip{ order:0; }
+    .tr-ex .d{ order:1; }
+    .tr-ex .c{ order:2; margin:0 auto 0 0; }
+    .tr-ex b{ order:3; }
+    .tr-ex .tr-x{ order:4; }
+    .tr-ex .t{ order:5; flex:1 1 100%; padding-left:20px; margin-top:-2px; }
     .tr-line{ flex-wrap:wrap; gap:0 8px; }
     .tr-line .tr-text{ order:3; flex:1 1 100%; }
     .tr-line .tr-t2{ order:1; width:auto; font-size:11px; }
@@ -1108,7 +1115,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-g</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-h</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2134,7 +2141,7 @@ function budgetHtml(t){
   h += '<div class="tr-list" id="trExpList">';
   sorted.forEach(x => {
     const d = dObj(x.date);
-    h += `<div class="tr-ex"><span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span><span class="d" data-act="editExpDate" data-id="${escA(x.id)}" style="cursor:pointer">${d.getMonth()+1}/${d.getDate()}</span><span class="t"><span data-act="editExpText" data-id="${escA(x.id)}">${esc(x.text)}</span> <span class="c" data-act="editExpCat" data-id="${escA(x.id)}">${esc(x.cat)}</span></span><b data-act="editExpAmt" data-id="${escA(x.id)}">${fmtMoney(t, x.amount)}</b><button class="tr-x" data-act="delExp" data-id="${escA(x.id)}">✕</button></div>`;
+    h += `<div class="tr-ex"><span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span><span class="d" data-act="editExpDate" data-id="${escA(x.id)}" style="cursor:pointer">${d.getMonth()+1}/${d.getDate()}</span><span class="t"><span data-act="editExpText" data-id="${escA(x.id)}">${esc(x.text)}</span></span><span class="c" data-act="editExpCat" data-id="${escA(x.id)}">${esc(x.cat)}</span><b data-act="editExpAmt" data-id="${escA(x.id)}">${fmtMoney(t, x.amount)}</b><button class="tr-x" data-act="delExp" data-id="${escA(x.id)}">✕</button></div>`;
   });
   h += '</div>';
   h += `<div class="tr-add"><input id="exDate" class="w84" type="text" readonly data-act="pickExDate" value="${fmtMD(exDate).replace(/ \(.\)$/, '')}"><select id="exCat">${EXP_CATS.map(c => `<option>${c}</option>`).join('')}</select><span style="flex-basis:100%;height:0"></span><input id="exText" class="grow" type="text" placeholder="내용"><input id="exAmt" class="w84" type="text" inputmode="numeric" placeholder="금액"><button class="tr-addbtn" data-act="addExp">+</button></div>`;

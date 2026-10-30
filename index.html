@@ -974,6 +974,11 @@
   .tr-dday{ font-family:'Noto Sans KR',sans-serif; font-size:11px; font-weight:700; background:#FFE3A3; border:1.5px solid #BFAF9B; border-radius:10px; padding:2px 8px; color:var(--ink); }
   .tr-bar{ height:7px; border-radius:4px; background:#EFE4CF; overflow:hidden; margin:8px 0 2px; }
   .tr-bar i{ display:block; height:100%; background:#E8B64C; }
+  .tr-focus{ border:1.5px solid #BFAF9B; border-left:5px solid #E8B64C; border-radius:10px; background:#FFF6DA; padding:8px 12px; margin:10px 0 0; font-size:14.5px; line-height:1.5; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tr-focus small{ display:block; font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
+  .tr-focus-line{ font-size:13.5px; color:var(--ink); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tr-chips1{ display:flex; gap:5px; flex-wrap:nowrap; margin-top:6px; }
+  .tr-chips1 button{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; border:1.5px dashed #D9CDBB; border-radius:12px; background:none; padding:3px 9px; cursor:pointer; white-space:nowrap; }
   .tr-subs{ display:flex; gap:6px; margin:12px 0 10px; }
   .tr-chip{ font-family:'Noto Sans KR',sans-serif; font-size:12px; padding:5px 12px; border:1.5px solid #D9CDBB; border-radius:14px; background:none; color:#7A6A53; cursor:pointer; }
   .tr-chip.on{ background:#FFE3A3; border-color:#BFAF9B; color:var(--ink); font-weight:600; }
@@ -1062,7 +1067,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-a</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-b</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1305,7 +1310,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-db.enablePersistence({ synchronizeTabs: true }).catch(err => { console.warn('오프라인 저장 비활성:', err.code); });
+try{ db.enablePersistence({ synchronizeTabs: true }).catch(err => { console.warn('오프라인 저장 비활성:', err.code); }); }catch(e){ console.warn(e); }
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 let currentUser = null;
@@ -1930,6 +1935,8 @@ let trips = [];
 let unsubscribeTrips = null;
 let openTripId = null, tripSub = 'plan', tripDayIdx = 0, tripFocus = null, packLastCat = '', exDate = null;
 let tripSheet = null;
+const FOCUS_LABEL = '여행의 다짐';
+const FOCUS_CHIPS = [['쉬기','천천히 쉬기'],['맛집','맛있는 것 많이 먹기'],['사진','사진 많이 남기기'],['가족','가족과 대화 많이 하기']];
 const EXP_CATS = ['숙박','교통','식비','쇼핑','기타'];
 const WD = ['일','월','화','수','목','금','토'];
 const CHECK_SVG = '<svg viewBox="0 0 20 20" fill="none"><path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/></svg>';
@@ -1940,7 +1947,7 @@ const tripById = id => trips.find(t => t.id === id);
 const esc = escapeHtml, escA = escapeAttr;
 
 function tripsCol(){ return db.collection('users').doc(currentUser.uid).collection('trips'); }
-function normTrip(t){ return { name:'', start:'', end:'', cur:'¥', budget:0, people:1, plan:{}, pack:[], exp:[], logs:{}, createdAt:0, ...t }; }
+function normTrip(t){ return { name:'', start:'', end:'', cur:'¥', budget:0, people:1, focus:'', plan:{}, pack:[], exp:[], logs:{}, createdAt:0, ...t }; }
 function refreshTripViews(){ renderTrip(); renderMoodFilters(); renderList(); }
 function subscribeTrips(){
   unsubscribeTrips = tripsCol().onSnapshot(snap => {
@@ -2000,6 +2007,7 @@ function tripCardHtml(t, hl, label){
     <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? '<span style="font-size:20px">🐋</span>' : ''}</div>
     <div class="tr-name">${esc(t.name || '이름 없는 여행')}</div>
     <div class="tr-sm">${fmtRange(t)}${t.people > 1 ? ` · ${t.people}명` : ''}</div>
+    ${t.focus ? `<div class="tr-focus-line">“${esc(t.focus)}”</div>` : ''}
     ${!past && t.budget > 0 ? `<div class="tr-bar"><i style="width:${pct}%"></i></div>` : ''}
     <div class="tr-sm" style="margin-top:6px">${meta}</div></div>`;
 }
@@ -2021,6 +2029,7 @@ function tripDetailHtml(t){
   const body = tripSub === 'plan' ? planHtml(t) : tripSub === 'pack' ? packHtml(t) : tripSub === 'budget' ? budgetHtml(t) : logHtml(t);
   return `<div class="tr-row2"><button class="tr-link" data-act="back">‹ 목록</button><span>${dd ? `<span class="tr-dday">${dd}</span> ` : ''}<button class="tr-link" data-act="editTrip">수정</button></span></div>
     <div class="tr-name big">${esc(t.name || '이름 없는 여행')}</div><div class="tr-sm">${fmtRange(t)}</div>
+    ${t.focus ? `<div class="tr-focus"><small>${FOCUS_LABEL}</small>${esc(t.focus)}</div>` : ''}
     <div class="tr-subs">${subs.map(([k, l]) => `<button class="tr-chip${tripSub === k ? ' on' : ''}" data-act="sub" data-k="${k}">${l}</button>`).join('')}</div>${body}`;
 }
 function planHtml(t){
@@ -2227,7 +2236,7 @@ $('tripRoot').addEventListener('keydown', (ev) => {
 function readTripForm(){
   if(!tripSheet || tripSheet.mode !== 'trip' || !$('tsName')) return;
   const d = tripSheet.d;
-  d.name = $('tsName').value; d.budget = toNum($('tsBudget').value); d.people = Math.max(1, toNum($('tsPeople').value) || 1);
+  d.name = $('tsName').value; d.focus = ($('tsFocus').value || '').trim(); d.budget = toNum($('tsBudget').value); d.people = Math.max(1, toNum($('tsPeople').value) || 1);
 }
 function renderTripSheet(){
   const body = $('tripSheetBody');
@@ -2240,6 +2249,9 @@ function renderTripSheet(){
       <input type="text" id="tsName" class="title-input" placeholder="예: 교토 3박 4일" value="${escA(d.name)}">
       <div class="field-lab">기간</div>
       <div class="tr-add" style="margin:0"><input type="text" readonly id="tsStart" class="grow" data-sact="pickStart" value="${fmtMD(d.start)}"><span class="tr-sm">–</span><input type="text" readonly id="tsEnd" class="grow" data-sact="pickEnd" value="${fmtMD(d.end)}"></div>
+      <div class="field-lab">${FOCUS_LABEL}</div>
+      <input type="text" id="tsFocus" class="tr-field" style="width:100%;white-space:nowrap" maxlength="25" placeholder="예: 서두르지 않기" value="${escA(d.focus || '')}">
+      <div class="tr-chips1">${FOCUS_CHIPS.map(c => `<button type="button" data-sact="focusChip" data-k="${escA(c[1])}">${c[0]}</button>`).join('')}</div>
       <div class="field-lab">예산 통화</div>
       <div class="tr-cur">${['¥','₩','$','€'].map(c => `<button class="tr-chip${d.cur === c ? ' on' : ''}" data-sact="cur" data-k="${c}">${c}</button>`).join('')}</div>
       <div class="tr-twoline"><div style="flex:1"><div class="field-lab">총 예산</div><input type="text" id="tsBudget" class="tr-field" style="width:100%" inputmode="numeric" placeholder="0" value="${d.budget || ''}"></div><div style="width:90px"><div class="field-lab">인원</div><input type="text" id="tsPeople" class="tr-field" style="width:100%" inputmode="numeric" value="${d.people || 1}"></div></div>
@@ -2269,7 +2281,7 @@ function renderTripSheet(){
 function openTripSheet(id){
   const t = id ? tripById(id) : null, td = todayStr();
   const e = new Date(); e.setDate(e.getDate() + 2);
-  tripSheet = { mode:'trip', id, d: t ? { name:t.name, start:t.start, end:t.end, cur:t.cur, budget:t.budget, people:t.people } : { name:'', start:td, end:dStr(e), cur:'¥', budget:0, people:1 } };
+  tripSheet = { mode:'trip', id, d: t ? { name:t.name, start:t.start, end:t.end, cur:t.cur, budget:t.budget, people:t.people, focus:t.focus || '' } : { name:'', focus:'', start:td, end:dStr(e), cur:'¥', budget:0, people:1 } };
   renderTripSheet();
 }
 function openTripLog(tripId, ds){
@@ -2284,13 +2296,14 @@ $('tripOverlay').addEventListener('click', (ev) => {
   if(a === 'close'){ tripSheet = null; return renderTripSheet(); }
   if(tripSheet.mode === 'trip'){
     readTripForm(); const d = tripSheet.d;
+    if(a === 'focusChip'){ d.focus = el.dataset.k; return renderTripSheet(); }
     if(a === 'cur'){ d.cur = el.dataset.k; return renderTripSheet(); }
     if(a === 'pickStart') return openDatePicker(d.start, v => { d.start = v; if(d.end < v) d.end = v; renderTripSheet(); });
     if(a === 'pickEnd') return openDatePicker(d.end, v => { d.end = v; if(d.start > v) d.start = v; renderTripSheet(); });
     if(a === 'saveTrip'){
       if(!d.name.trim()){ toast('여행 이름을 입력해주세요'); return; }
       const old = tripSheet.id ? tripById(tripSheet.id) : null;
-      const t = normTrip({ ...(old || {}), id: old ? old.id : newId(), createdAt: old ? old.createdAt : Date.now(), name:d.name.trim(), start:d.start, end:d.end, cur:d.cur, budget:d.budget, people:d.people });
+      const t = normTrip({ ...(old || {}), id: old ? old.id : newId(), createdAt: old ? old.createdAt : Date.now(), name:d.name.trim(), start:d.start, end:d.end, cur:d.cur, budget:d.budget, people:d.people, focus:d.focus || '' });
       tripSheet = null; renderTripSheet(); saveTrip(t);
       if(!old){ openTripId = t.id; tripSub = 'plan'; tripDayIdx = 0; renderTrip(); }
       return;

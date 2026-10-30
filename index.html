@@ -465,7 +465,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 0;
+    padding: 7px 0;
     border-bottom: 1px solid var(--line);
   }
   .todo-check{
@@ -991,17 +991,21 @@
   .tr-daynav button{ background:none; border:none; font-size:24px; color:#7A6A53; padding:0 8px; cursor:pointer; font-family:inherit; }
   .tr-daynav b{ font-size:16px; color:var(--ink); }
   .tr-list{ position:relative; }
-  .tr-item{ display:flex; align-items:center; gap:8px; padding:9px 2px; border-bottom:1px solid #E6DCC9; background:var(--bg); font-size:15px; color:var(--ink); }
+  .tr-item{ display:flex; align-items:center; gap:8px; padding:7px 2px; border-bottom:1px solid #E6DCC9; background:var(--bg); font-size:15px; color:var(--ink); }
   .tr-item.dragging, .tr-ex.dragging{ z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
   .tr-item.done .tr-text{ color:#BFAF9B; text-decoration:line-through; }
   .tr-ibody{ flex:1; min-width:0; }
+  .tr-line{ display:flex; align-items:baseline; gap:7px; }
+  .tr-t2{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; width:40px; flex:none; cursor:text; }
+  .tr-line .tr-text{ flex:1; min-width:0; line-height:1.35; }
+  .tr-cost{ cursor:text; min-width:14px; text-align:right; }
   .tr-time{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
   .tr-text{ word-break:break-word; cursor:text; }
   .tr-time, .tr-cost, .tr-gt, .tr-ex .t span, .tr-ex b{ cursor:text; }
   .ph{ color:#CDBFA8 !important; }
   .tr-cost{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; flex:none; }
   .tr-x{ background:none; border:none; color:#BFAF9B; font-size:15px; cursor:pointer; padding:4px; flex:none; }
-  .tr-grip{ flex:none; width:24px; height:34px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
+  .tr-grip{ flex:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
   .tr-ck{ flex:none; width:22px; height:22px; border:1.5px solid #BFAF9B; border-radius:4px; background:none; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; }
   .tr-ck svg{ width:20px; height:20px; display:none; }
   .tr-item.done .tr-ck svg{ display:block; }
@@ -1030,7 +1034,7 @@
   .tr-twoline{ display:flex; gap:12px; align-items:center; }
 
   .rstar{ width:14px; height:14px; margin-right:6px; flex:none; cursor:pointer; display:block; }
-  .rstar-wrap{ display:flex; align-items:center; flex:none; }
+  .rstar-wrap{ display:flex; align-items:center; flex:none; padding:6px 2px 6px 0; margin:-6px 0; cursor:pointer; }
   .todo-text.hasstar, .home-todo .todo-text.hasstar{ display:flex; align-items:center; }
   .home-todo .rstar{ cursor:default; }
   .todo-text{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
@@ -1078,7 +1082,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-f</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-h</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1226,6 +1230,7 @@
   }catch(e){}
 })();
 
+const STAR_EMPTY = '<svg class="rstar" viewBox="0 0 24 24" fill="none" aria-label="중요 표시"><path d="M12.2 3.2 L14.8 9 L21 9.6 L16.3 13.8 L17.7 20 L12 16.7 L6.5 20.1 L7.8 13.9 L3.1 9.8 L9.4 9.1 Z" stroke="#D9CDBB" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 const STAR_SVG = '<svg class="rstar" viewBox="0 0 24 24" aria-label="꼭 해야 할 일"><path d="M12.2 3.2 L14.8 9 L21 9.6 L16.3 13.8 L17.7 20 L12 16.7 L6.5 20.1 L7.8 13.9 L3.1 9.8 L9.4 9.1 Z" fill="#B6432E" stroke="#B6432E" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 let newStar = false;
 const MOODS = [
@@ -1415,7 +1420,7 @@ function todoRowHtml(date, t){
         <path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" transform="rotate(-4 10 10)"/>
         <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
       </svg></button>
-      <div class="todo-text${t.star ? ' hasstar' : ''}" data-edit="${escapeAttr(t.id)}" data-date="${date}">${t.star ? `<span class="rstar-wrap" data-unstar="${escapeAttr(t.id)}" data-date="${date}">${STAR_SVG}</span>` : ''}<span>${escapeHtml(t.text)}</span></div>
+      <div class="todo-text hasstar" data-edit="${escapeAttr(t.id)}" data-date="${date}"><span class="rstar-wrap" data-unstar="${escapeAttr(t.id)}" data-date="${date}">${t.star ? STAR_SVG : STAR_EMPTY}</span><span>${escapeHtml(t.text)}</span></div>
       ${todoReorder ? `<span class="todo-grip" data-grip="${escapeAttr(t.id)}" data-date="${date}" aria-label="끌어서 순서 변경"><svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg></span>` : ''}
       <button class="todo-del" data-del="${escapeAttr(t.id)}" data-date="${date}">✕</button>
     </div>`;
@@ -1601,12 +1606,6 @@ function renderTodoList(){
   });
   const toggleStar = (date, id) => { setItems(date, getItems(date).map(t => t.id === id ? { ...t, star: !t.star } : t)); renderTodoList(); };
   el.querySelectorAll('[data-edit]').forEach(div => {
-    let timer = null, fired = false;
-    const cancel = () => { clearTimeout(timer); timer = null; };
-    div.addEventListener('pointerdown', () => { fired = false; cancel(); timer = setTimeout(() => { fired = true; if(navigator.vibrate) try{ navigator.vibrate(15); }catch(e){} toggleStar(div.dataset.date, div.dataset.edit); }, 550); });
-    ['pointerup','pointerleave','pointercancel','pointermove'].forEach(ev => div.addEventListener(ev, cancel));
-    div.addEventListener('contextmenu', e => e.preventDefault());
-    div.addEventListener('click', e => { if(fired){ e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
     div.onclick = (ev) => {
       if(ev.target.closest('[data-unstar]')){ ev.stopPropagation(); toggleStar(div.dataset.date, div.dataset.edit); return; }
       const id = div.dataset.edit, date = div.dataset.date;
@@ -2065,8 +2064,8 @@ function planHtml(t){
   const rows = items.map(it => `<div class="tr-item${it.done ? ' done' : ''}" data-id="${escA(it.id)}">
       <span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span>
       <button class="tr-ck" data-act="togPlan" data-id="${escA(it.id)}" aria-label="완료">${CHECK_SVG}</button>
-      <div class="tr-ibody"><div class="tr-time${it.time ? '' : ' ph'}" data-act="editPlanTime" data-id="${escA(it.id)}">${it.time ? esc(it.time) : '시간 +'}</div><div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div></div>
-      <span class="tr-cost${it.cost ? '' : ' ph'}" data-act="editPlanCost" data-id="${escA(it.id)}">${it.cost ? fmtMoney(t, it.cost) : '비용 +'}</span>
+      <div class="tr-ibody tr-line"><span class="tr-t2${it.time ? '' : ' ph'}" data-act="editPlanTime" data-id="${escA(it.id)}">${it.time ? esc(it.time) : '--:--'}</span><div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div></div>
+      <span class="tr-cost${it.cost ? '' : ' ph'}" data-act="editPlanCost" data-id="${escA(it.id)}">${it.cost ? fmtMoney(t, it.cost) : '+'}</span>
       <button class="tr-x" data-act="delPlan" data-id="${escA(it.id)}">✕</button></div>`).join('');
   return `<div class="tr-daynav"><button data-act="dayPrev" aria-label="전날">‹</button><b>${tripDayIdx + 1}일차 · ${fmtMD(ds)}</b><button data-act="dayNext" aria-label="다음날">›</button></div>
     <div class="tr-list" id="trPlanList">${rows || `<div class="tr-empty" style="padding:18px 0">이 날의 일정을 추가해보세요.</div>`}</div>
@@ -2185,6 +2184,7 @@ function inlineEdit(el, cb, opt){
   inp.type = 'text'; inp.value = old; inp.className = 'tr-inline';
   if(opt.num) inp.inputMode = 'numeric';
   if(opt.ph) inp.placeholder = opt.ph;
+  if(opt.w){ inp.style.width = opt.w; inp.style.flex = 'none'; }
   el.replaceWith(inp); inp.focus(); inp.select();
   let done = false;
   const fin = (save) => { if(done) return; done = true; const v = inp.value.trim(); if(save && v !== old && (v || opt.allowEmpty)) cb(v); else renderTrip(); };
@@ -2218,8 +2218,8 @@ function tripAct(act, el){
     case 'togPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, done: !x.done } : x) } });
     case 'delPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].filter(x => x.id !== id) } });
     case 'editPlan': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, text: v } : x) } }));
-    case 'editPlanTime': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, time: v } : x) } }), { init: (t.plan[ds].find(x => x.id === id) || {}).time || '', allowEmpty: true, ph: '예: 10:30' });
-    case 'editPlanCost': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, cost: toNum(v) } : x) } }), { init: String((t.plan[ds].find(x => x.id === id) || {}).cost || ''), allowEmpty: true, num: true, ph: '비용' });
+    case 'editPlanTime': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, time: v } : x) } }), { init: (t.plan[ds].find(x => x.id === id) || {}).time || '', allowEmpty: true, ph: '10:30', w: '64px' });
+    case 'editPlanCost': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, cost: toNum(v) } : x) } }), { init: String((t.plan[ds].find(x => x.id === id) || {}).cost || ''), allowEmpty: true, num: true, ph: '비용', w: '80px' });
     case 'editCat': return inlineEdit(el, v => upd({ pack: t.pack.map(x => x.cat === el.dataset.cat ? { ...x, cat: v } : x) }));
     case 'editExpText': return inlineEdit(el, v => upd({ exp: t.exp.map(x => x.id === id ? { ...x, text: v } : x) }));
     case 'editExpAmt': return inlineEdit(el, v => { const n = toNum(v); if(n) upd({ exp: t.exp.map(x => x.id === id ? { ...x, amount: n } : x) }); else renderTrip(); }, { init: String((t.exp.find(x => x.id === id) || {}).amount || ''), num: true });

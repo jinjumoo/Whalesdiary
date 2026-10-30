@@ -1062,7 +1062,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.30-d</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-a</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1194,23 +1194,18 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// 예전 버전의 서비스워커/캐시가 남아 있으면 정리 (반영이 안 될 때 대비)
-(function cleanupOldCache(){
+// 오프라인 지원: 서비스워커 등록 (예전 버전 잔여 서비스워커/캐시는 정리)
+(function setupOffline(){
   try{
-    let changed = false;
-    const jobs = [];
-    if('serviceWorker' in navigator){
-      jobs.push(navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => { changed = true; return r.unregister(); }))));
-    }
+    if(!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => {
+      const u = (r.active || r.waiting || r.installing || {}).scriptURL || '';
+      return u && !/\/sw\.js(\?|$)/.test(u) ? r.unregister() : null;
+    }))).catch(()=>{});
     if(window.caches){
-      jobs.push(caches.keys().then(ks => Promise.all(ks.map(k => { changed = true; return caches.delete(k); }))));
+      caches.keys().then(ks => Promise.all(ks.filter(k => !k.startsWith('whale-diary-')).map(k => caches.delete(k)))).catch(()=>{});
     }
-    Promise.all(jobs).then(() => {
-      if(changed && !sessionStorage.getItem('cacheCleaned')){
-        sessionStorage.setItem('cacheCleaned', '1');
-        location.reload();
-      }
-    }).catch(()=>{});
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
   }catch(e){}
 })();
 
@@ -1310,6 +1305,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+db.enablePersistence({ synchronizeTabs: true }).catch(err => { console.warn('오프라인 저장 비활성:', err.code); });
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 let currentUser = null;
@@ -1330,12 +1326,19 @@ function setSyncStatus(text){
   if(el) el.textContent = text;
 }
 
+function updateNetStatus(){
+  if(!navigator.onLine) setSyncStatus('오프라인 · 연결되면 자동 동기화');
+  else if(currentUser) setSyncStatus('✓ 동기화됨');
+}
+window.addEventListener('offline', updateNetStatus);
+window.addEventListener('online', () => { setTimeout(updateNetStatus, 1500); });
+
 function subscribeEntries(){
   setSyncStatus('동기화 중...');
-  unsubscribeEntries = entriesCollection().onSnapshot((snapshot)=>{
+  unsubscribeEntries = entriesCollection().onSnapshot({ includeMetadataChanges: true }, (snapshot)=>{
     entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     renderAll();
-    setSyncStatus('✓ 동기화됨');
+    setSyncStatus(navigator.onLine ? (snapshot.metadata.hasPendingWrites ? '동기화 대기 중…' : '✓ 동기화됨') : '오프라인 · 연결되면 자동 동기화');
   }, (err)=>{
     console.error(err);
     setSyncStatus('동기화 오류');

@@ -1105,7 +1105,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-d</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-e</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1979,8 +1979,8 @@ let trips = [];
 let unsubscribeTrips = null;
 let openTripId = null, tripSub = 'plan', tripDayIdx = 0, tripFocus = null, packLastCat = '', exDate = null;
 let tripSheet = null;
-const FOCUS_LABEL = '여행의 다짐';
-const FOCUS_CHIPS = [['쉬기','천천히 쉬기'],['맛집','맛있는 것 많이 먹기'],['사진','사진 많이 남기기'],['가족','가족과 대화 많이 하기']];
+const FOCUS_LABEL = '여행의 테마';
+const FOCUS_CHIPS = [['쉬기','느긋한 휴식'],['맛집','맛집 탐방'],['사진','사진 여행'],['가족','가족과 함께']];
 const EXP_CATS = ['숙박','교통','식비','쇼핑','기타'];
 const WD = ['일','월','화','수','목','금','토'];
 const CHECK_SVG = '<svg viewBox="0 0 20 20" fill="none"><path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/></svg>';
@@ -2051,7 +2051,7 @@ function tripCardHtml(t, hl, label){
     <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? '<span style="font-size:20px">🐋</span>' : ''}</div>
     <div class="tr-name">${esc(t.name || '이름 없는 여행')}</div>
     <div class="tr-sm">${fmtRange(t)}${t.people > 1 ? ` · ${t.people}명` : ''}</div>
-    ${t.focus ? `<div class="tr-focus-line"><span class="lbl">다짐</span>${esc(t.focus)}</div>` : ''}
+    ${t.focus ? `<div class="tr-focus-line"><span class="lbl">테마</span>${esc(t.focus)}</div>` : ''}
     ${!past && t.budget > 0 ? `<div class="tr-bar"><i style="width:${pct}%"></i></div>` : ''}
     <div class="tr-sm" style="margin-top:6px">${meta}</div></div>`;
 }
@@ -2308,7 +2308,7 @@ function renderTripSheet(){
       <div class="field-lab">기간</div>
       <div class="tr-add" style="margin:0"><input type="text" readonly id="tsStart" class="grow" data-sact="pickStart" value="${fmtMD(d.start)}"><span class="tr-sm">–</span><input type="text" readonly id="tsEnd" class="grow" data-sact="pickEnd" value="${fmtMD(d.end)}"></div>
       <div class="field-lab">${FOCUS_LABEL}</div>
-      <input type="text" id="tsFocus" class="tr-field" style="width:100%;white-space:nowrap" maxlength="25" placeholder="예: 서두르지 않기" value="${escA(d.focus || '')}">
+      <input type="text" id="tsFocus" class="tr-field" style="width:100%;white-space:nowrap" maxlength="25" placeholder="예: 느긋한 휴식" value="${escA(d.focus || '')}">
       <div class="tr-chips1">${FOCUS_CHIPS.map(c => `<button type="button" data-sact="focusChip" data-k="${escA(c[1])}">${c[0]}</button>`).join('')}</div>
       <div class="field-lab">예산 통화</div>
       <div class="tr-cur">${['¥','₩','$','€'].map(c => `<button class="tr-chip${d.cur === c ? ' on' : ''}" data-sact="cur" data-k="${c}">${c}</button>`).join('')}</div>

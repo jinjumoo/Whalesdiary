@@ -12,10 +12,11 @@
 <meta name="apple-mobile-web-app-title" content="고래의 하루">
 <meta name="theme-color" content="#FFFBEF">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=EB+Garamond:wght@400;500;600&family=Song+Myung&family=Noto+Sans+KR:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Playfair+Display:wght@500;600;700&family=EB+Garamond:wght@400;500;600&family=Song+Myung&family=Noto+Sans+KR:wght@400;500&display=swap');
 
   :root{
-    --font-body: 'EB Garamond','Song Myung',Georgia,serif;
+    --font-body: 'Gowun Batang',serif;
+    --font-ui: 'EB Garamond','Song Myung',Georgia,serif;
     --font-head: 'Playfair Display','Song Myung',Georgia,serif;
     --bg: #FFFBEF;
     --bg-deep: #FFF3D2;
@@ -1047,6 +1048,7 @@
 
   /* 글씨체: 독서일지와 동일 구성 (영문·숫자 EB Garamond / Playfair, 한글 송명) */
   body{ font-synthesis-weight:none; }
+  .eyebrow, .sheet-eyebrow, .tab-btn, header .sub, .cal-day .day-num, .num-corner, .tr-dday, .tr-t2, .tr-cost, .tr-sm, .tr-catbar, .tr-focus, .tr-focus-line, .todo-date, .cal-weekdays, .home-head span{ font-family:var(--font-ui); }
   h1, h3, .stat .num, .home-big, .home-entry-title, .home-head b, .tr-name, .tr-head h3, .sheet-date, .cal-title, .entry-title, .entry-day b, .month-head, .count-num{ font-family:var(--font-head); font-weight:500; }
   /* 할일: 날짜 이동 / 순서 편집 */
   .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
@@ -1088,7 +1090,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-a</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-b</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 

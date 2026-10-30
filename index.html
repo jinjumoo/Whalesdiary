@@ -1082,7 +1082,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-l</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.32-a</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2079,10 +2079,11 @@ function packHtml(t){
   let h = `<div class="tr-box" style="padding:10px 14px"><div class="tr-row2"><span class="tr-sm">챙긴 물건 ${done} / ${pack.length}</span><span class="tr-sm">${pct}%</span></div><div class="tr-bar"><i style="width:${pct}%"></i></div></div>`;
   if(!pack.length) h += `<div class="tr-empty" style="padding:14px 0">챙길 물건을 추가해보세요.</div>`;
   cats.forEach(c => {
-    h += `<div class="tr-gt" data-act="editCat" data-cat="${escA(c)}">${esc(c)}</div>`;
+    h += `<div class="tr-gt" data-act="editCat" data-cat="${escA(c)}">${esc(c)}</div><div class="tr-list" data-packcat="${escA(c)}">`;
     pack.filter(p => p.cat === c).forEach(p => {
-      h += `<div class="tr-item${p.done ? ' done' : ''}"><button class="tr-ck" data-act="togPack" data-id="${escA(p.id)}" aria-label="챙김">${CHECK_SVG}</button><div class="tr-ibody"><div class="tr-text" data-act="editPack" data-id="${escA(p.id)}">${esc(p.text)}</div></div><button class="tr-x" data-act="delPack" data-id="${escA(p.id)}">✕</button></div>`;
+      h += `<div class="tr-item${p.done ? ' done' : ''}"><span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span><button class="tr-ck" data-act="togPack" data-id="${escA(p.id)}" aria-label="챙김">${CHECK_SVG}</button><div class="tr-ibody"><div class="tr-text" data-act="editPack" data-id="${escA(p.id)}">${esc(p.text)}</div></div><button class="tr-x" data-act="delPack" data-id="${escA(p.id)}">✕</button></div>`;
     });
+    h += `</div>`;
   });
   h += `<div class="tr-add"><input id="pkCat" class="w84" style="width:110px" list="pkCats" type="text" placeholder="분류 예: 서류" value="${escA(packLastCat)}"><datalist id="pkCats">${cats.map(c => `<option value="${escA(c)}">`).join('')}<option value="서류"><option value="옷"><option value="전자기기"><option value="세면·약"></datalist><input id="pkText" class="grow" type="text" placeholder="챙길 것"><button class="tr-addbtn" data-act="addPack">+</button></div>`;
   return h;
@@ -2132,6 +2133,19 @@ function renderTrip(){
       const arr = [...((t.plan || {})[ds] || [])];
       const [m] = arr.splice(from, 1); arr.splice(to, 0, m);
       saveTrip({ ...t, plan: { ...t.plan, [ds]: arr } });
+    });
+  }
+  if(t && tripSub === 'pack'){
+    root.querySelectorAll('[data-packcat]').forEach(box => {
+      const cat = box.dataset.packcat;
+      enableDrag(box, (from, to) => {
+        const ids = t.pack.filter(p => p.cat === cat).map(p => p.id);
+        const moved = [...ids]; const [m] = moved.splice(from, 1); moved.splice(to, 0, m);
+        const byId = Object.fromEntries(t.pack.map(p => [p.id, p]));
+        let k = 0;
+        const next = t.pack.map(p => p.cat === cat ? byId[moved[k++]] : p);
+        saveTrip({ ...t, pack: next });
+      });
     });
   }
   if(t && tripSub === 'budget' && $('trExpList')){

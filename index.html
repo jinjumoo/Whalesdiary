@@ -960,6 +960,66 @@
   .dp-foot{ display:flex; justify-content:space-between; margin-top:8px; padding:0 4px; }
   .dp-foot button{ background:none; border:none; font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#7A6A53; text-decoration:underline; text-underline-offset:3px; padding:6px 2px; cursor:pointer; }
 
+
+  /* ===== 여행 ===== */
+  .tr-row2{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .tr-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .tr-head h3{ margin:0; font-family:'Gowun Batang',serif; font-size:19px; color:var(--ink); }
+  .tr-name{ font-family:'Gowun Batang',serif; font-size:19px; font-weight:700; color:var(--ink); margin:2px 0; }
+  .tr-name.big{ font-size:22px; margin:6px 0 2px; }
+  .tr-sm{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; }
+  .tr-link{ background:none; border:none; font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#7A6A53; padding:6px 2px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+  .tr-card{ border:1.5px solid #D9CDBB; border-radius:14px; padding:12px 14px; margin-bottom:10px; cursor:pointer; }
+  .tr-card.hl{ background:#FFF6DA; border-color:#BFAF9B; }
+  .tr-dday{ font-family:'Noto Sans KR',sans-serif; font-size:11px; font-weight:700; background:#FFE3A3; border:1.5px solid #BFAF9B; border-radius:10px; padding:2px 8px; color:var(--ink); }
+  .tr-bar{ height:7px; border-radius:4px; background:#EFE4CF; overflow:hidden; margin:8px 0 2px; }
+  .tr-bar i{ display:block; height:100%; background:#E8B64C; }
+  .tr-subs{ display:flex; gap:6px; margin:12px 0 10px; }
+  .tr-chip{ font-family:'Noto Sans KR',sans-serif; font-size:12px; padding:5px 12px; border:1.5px solid #D9CDBB; border-radius:14px; background:none; color:#7A6A53; cursor:pointer; }
+  .tr-chip.on{ background:#FFE3A3; border-color:#BFAF9B; color:var(--ink); font-weight:600; }
+  .tr-gt{ font-family:'Noto Sans KR',sans-serif; font-size:12px; font-weight:600; color:#7A6A53; margin:12px 2px 2px; }
+  .tr-section{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; margin:14px 2px 4px; }
+  .tr-box{ border:1.5px solid #D9CDBB; border-radius:14px; padding:12px 14px; margin-bottom:10px; }
+  .tr-daynav{ display:flex; align-items:center; justify-content:space-between; margin:4px 0 6px; }
+  .tr-daynav button{ background:none; border:none; font-size:24px; color:#7A6A53; padding:0 8px; cursor:pointer; font-family:inherit; }
+  .tr-daynav b{ font-size:16px; color:var(--ink); }
+  .tr-list{ position:relative; }
+  .tr-item{ display:flex; align-items:center; gap:8px; padding:9px 2px; border-bottom:1px solid #E6DCC9; background:var(--bg); font-size:15px; color:var(--ink); }
+  .tr-item.dragging{ z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
+  .tr-item.done .tr-text{ color:#BFAF9B; text-decoration:line-through; }
+  .tr-ibody{ flex:1; min-width:0; }
+  .tr-time{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
+  .tr-text{ word-break:break-word; cursor:text; }
+  .tr-cost{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; flex:none; }
+  .tr-x{ background:none; border:none; color:#BFAF9B; font-size:15px; cursor:pointer; padding:4px; flex:none; }
+  .tr-grip{ flex:none; width:24px; height:34px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
+  .tr-ck{ flex:none; width:22px; height:22px; border:1.5px solid #BFAF9B; border-radius:4px; background:none; padding:0; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .tr-ck svg{ width:20px; height:20px; display:none; }
+  .tr-item.done .tr-ck svg{ display:block; }
+  .tr-add{ display:flex; gap:6px; align-items:flex-end; margin:12px 0 4px; flex-wrap:wrap; }
+  .tr-add input, .tr-add select, .tr-inline, .tr-field{ background:transparent; border:none; border-bottom:1px solid var(--line); padding:8px 2px; font-family:'Gowun Batang',serif; font-size:15px; color:var(--ink); outline:none; border-radius:0; min-width:0; }
+  .tr-add input:focus, .tr-inline:focus, .tr-field:focus{ border-bottom-color:var(--ink); }
+  .tr-add .grow{ flex:1 1 90px; }
+  .tr-add .w64{ width:64px; } .tr-add .w84{ width:84px; }
+  .tr-add input[readonly]{ cursor:pointer; }
+  .tr-addbtn{ width:34px; height:34px; border-radius:50%; border:1.5px solid #BFAF9B; background:#FFE3A3; font-size:20px; color:var(--ink); cursor:pointer; flex:none; line-height:1; }
+  .tr-inline{ width:100%; }
+  .tr-catbar{ display:flex; align-items:center; gap:8px; margin:4px 0; font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; }
+  .tr-catbar span:first-child{ width:34px; } .tr-catbar span:last-child{ width:78px; text-align:right; }
+  .tr-catbar .tr-bar{ flex:1; margin:0; }
+  .tr-ex{ display:flex; align-items:center; gap:8px; padding:8px 2px; border-bottom:1px solid #E6DCC9; font-size:14px; color:var(--ink); }
+  .tr-ex .d{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; width:32px; flex:none; }
+  .tr-ex .t{ flex:1; min-width:0; word-break:break-word; }
+  .tr-ex .c{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
+  .tr-logcard{ border:1.5px solid #D9CDBB; border-radius:14px; padding:12px 14px; margin-bottom:10px; cursor:pointer; }
+  .tr-logcard.empty-day{ border-style:dashed; text-align:center; color:#7A6A53; font-size:14px; }
+  .tr-logcard .pv{ font-size:14px; line-height:1.6; color:#7A6A53; margin-top:6px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .tr-badge{ display:inline-block; font-family:'Noto Sans KR',sans-serif; font-size:11px; background:#FFE3A3; border:1.5px solid #BFAF9B; border-radius:9px; padding:1px 7px; color:var(--ink); margin-left:6px; font-weight:400; vertical-align:middle; }
+  .tr-cur{ display:flex; gap:6px; }
+  .tr-empty{ text-align:center; color:#7A6A53; font-size:14.5px; line-height:1.7; padding:30px 0; }
+  .tr-plus{ position:static; }
+  .tr-twoline{ display:flex; gap:12px; align-items:center; }
+
   /* 할일: 날짜 이동 / 순서 편집 */
   .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
   .todo-datebar .todo-date{ margin:0; }
@@ -1000,7 +1060,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.29-i</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.30-a</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1008,6 +1068,7 @@
     <button class="tab-btn active" id="tabHomeBtn">오늘</button>
     <button class="tab-btn" id="tabTodoBtn">할일</button>
     <button class="tab-btn" id="tabListBtn">일기</button>
+    <button class="tab-btn" id="tabTripBtn">여행</button>
   </div>
 
   <div class="tab-card">
@@ -1078,6 +1139,10 @@
         <button class="trash-link" id="trashLink" style="display:none;"></button>
         <div id="trashList"></div>
       </div>
+
+      <div class="tab-swipe-panel" id="tripView">
+        <div id="tripRoot"></div>
+      </div>
     </div>
   </div>
 
@@ -1118,6 +1183,10 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="overlay" id="tripOverlay">
+  <div class="sheet" id="tripSheetBody"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1582,10 +1651,13 @@ auth.onAuthStateChanged((user)=>{
     $('appWrap').style.display = 'block';
     subscribeEntries();
     subscribeTodos();
+    subscribeTrips();
   } else {
     currentUser = null;
     if(unsubscribeEntries){ unsubscribeEntries(); unsubscribeEntries = null; }
     if(unsubscribeTodos){ unsubscribeTodos(); unsubscribeTodos = null; }
+    if(unsubscribeTrips){ unsubscribeTrips(); unsubscribeTrips = null; }
+    trips = []; openTripId = null; tripSheet = null;
     entries = [];
     todoItems = []; todosByDate = {};
     $('authScreen').style.display = 'flex';
@@ -1609,6 +1681,7 @@ $('logoutBtn').onclick = async () => {
 function renderMoodFilters(){
   const wrap = $('moodFilters');
   const active = activeEntries();
+  const tripLogs = tripLogEntries();
   wrap.innerHTML = '';
   const add = (key, label) => {
     const c = document.createElement('div');
@@ -1617,8 +1690,9 @@ function renderMoodFilters(){
     c.onclick = () => { activeFilter = key; renderMoodFilters(); renderList(); };
     wrap.appendChild(c);
   };
-  add('all', `전체 ${active.length}`);
+  add('all', `전체 ${active.length + tripLogs.length}`);
   if(active.some(e=>e.photo)) add('photo', '사진 있음');
+  if(tripLogs.length) add('trip', `✈ 여행 ${tripLogs.length}`);
   MOODS.forEach(m => add(m.key, `${m.emoji} ${m.label}`));
   const tagCount = {};
   active.forEach(e => (e.tags||[]).forEach(t => { tagCount[t] = (tagCount[t]||0) + 1; }));
@@ -1628,6 +1702,7 @@ function renderMoodFilters(){
 function matchesFilter(e){
   if(activeFilter==='all') return true;
   if(activeFilter==='photo') return !!e.photo;
+  if(activeFilter==='trip') return !!e.isTrip;
   if(activeFilter.startsWith('tag:')) return (e.tags||[]).includes(activeFilter.slice(4));
   return e.mood===activeFilter;
 }
@@ -1635,9 +1710,9 @@ function matchesFilter(e){
 function renderList(){
   const list = $('entryList');
   const q = searchQuery.trim().toLowerCase();
-  const filtered = activeEntries().filter(matchesFilter).filter(e => {
+  const filtered = [...activeEntries(), ...tripLogEntries()].filter(matchesFilter).filter(e => {
     if(!q) return true;
-    return (e.title||'').toLowerCase().includes(q) || (e.body||'').toLowerCase().includes(q) || (e.tags||[]).some(t=>t.toLowerCase().includes(q));
+    return (e.title||'').toLowerCase().includes(q) || (e.body||'').toLowerCase().includes(q) || (e.tags||[]).some(t=>t.toLowerCase().includes(q)) || (e.tripName||'').toLowerCase().includes(q);
   });
   const sorted = [...filtered].sort((a,b)=> b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
 
@@ -1656,18 +1731,19 @@ function renderList(){
     const month = `${d.getFullYear()}년 ${d.getMonth()+1}월`;
     if(month !== lastMonth){ html += `<div class="month-head">${month}</div>`; lastMonth = month; }
     const meta = [...(e.tags||[]).map(t=>'#'+escapeHtml(t)), e.photo ? '사진 1' : ''].filter(Boolean).join(' · ');
+    const badge = e.isTrip ? `<span class="tr-badge">✈ ${escapeHtml(e.tripName||'여행')}${e.dayNo ? ' · '+e.dayNo+'일차' : ''}</span>` : '';
     html += `
-      <div class="entry-row" data-id="${escapeAttr(e.id)}">
+      <div class="entry-row" data-id="${escapeAttr(e.id)}"${e.isTrip ? ` data-trip="${escapeAttr(e.tripId)}" data-tdate="${e.date}"` : ''}>
         <div class="entry-day"><b>${d.getDate()}</b><span>${days[d.getDay()]}</span></div>
         <div class="entry-main">
-          <div class="entry-title">${escapeHtml(e.title || '제목 없음')}</div>
+          <div class="entry-title">${escapeHtml(e.title || '제목 없음')}${badge}</div>
           <div class="entry-preview">${escapeHtml(e.body || '')}</div>
           ${meta ? `<div class="entry-meta">${meta}</div>` : ''}
         </div>
       </div>`;
   });
   list.innerHTML = html;
-  list.querySelectorAll('.entry-row').forEach(row => { row.onclick = () => openEditor(row.dataset.id); });
+  list.querySelectorAll('.entry-row').forEach(row => { row.onclick = () => row.dataset.trip ? openTripLog(row.dataset.trip, row.dataset.tdate) : openEditor(row.dataset.id); });
 }
 
 function autoGrowTextarea(el){
@@ -1843,13 +1919,407 @@ function closeEditor(){
   editingId = null;
 }
 
-const TAB_ORDER = ['home', 'todo', 'list'];
+
+// ===== 여행 기록 =====
+let trips = [];
+let unsubscribeTrips = null;
+let openTripId = null, tripSub = 'plan', tripDayIdx = 0, tripFocus = null, packLastCat = '서류', exDate = null;
+let tripSheet = null;
+const EXP_CATS = ['숙박','교통','식비','쇼핑','기타'];
+const WD = ['일','월','화','수','목','금','토'];
+const CHECK_SVG = '<svg viewBox="0 0 20 20" fill="none"><path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/></svg>';
+const GRIP_SVG = '<svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg>';
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const toNum = v => { const n = Number(String(v || '').replace(/[^\d.]/g, '')); return isFinite(n) ? n : 0; };
+const tripById = id => trips.find(t => t.id === id);
+const esc = escapeHtml, escA = escapeAttr;
+
+function tripsCol(){ return db.collection('users').doc(currentUser.uid).collection('trips'); }
+function normTrip(t){ return { name:'', start:'', end:'', cur:'¥', budget:0, people:1, plan:{}, pack:[], exp:[], logs:{}, createdAt:0, ...t }; }
+function refreshTripViews(){ renderTrip(); renderMoodFilters(); renderList(); }
+function subscribeTrips(){
+  unsubscribeTrips = tripsCol().onSnapshot(snap => {
+    trips = snap.docs.map(d => normTrip({ id:d.id, ...d.data() }));
+    if(openTripId && !tripById(openTripId)) openTripId = null;
+    refreshTripViews();
+  }, err => {
+    console.error(err);
+    toast('여행 불러오기 실패: ' + (err.code || err.message || '알 수 없음'));
+  });
+}
+function saveTrip(t){
+  const i = trips.findIndex(x => x.id === t.id);
+  if(i >= 0) trips[i] = t; else trips.push(t);
+  const { id, ...data } = t;
+  tripsCol().doc(id).set({ ...data, updatedAt: Date.now() }).catch(err => {
+    console.error(err);
+    toast('여행 저장 실패: ' + (err.code || err.message || '알 수 없음'));
+  });
+  refreshTripViews();
+}
+
+function dObj(ds){ return new Date(ds + 'T12:00:00'); }
+function dStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function tripDays(t){
+  const out = []; if(!t.start || !t.end) return out;
+  const d = dObj(t.start), e = dObj(t.end);
+  while(d <= e && out.length < 60){ out.push(dStr(d)); d.setDate(d.getDate() + 1); }
+  return out;
+}
+function dayDiff(a, b){ return Math.round((dObj(b) - dObj(a)) / 86400000); }
+function fmtMD(ds){ const d = dObj(ds); return `${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})`; }
+function fmtRange(t){
+  if(!t.start || !t.end) return '';
+  const s = dObj(t.start), e = dObj(t.end), n = dayDiff(t.start, t.end);
+  return `${s.getMonth()+1}월 ${s.getDate()}일 – ${e.getMonth()+1}월 ${e.getDate()}일 · ${n}박 ${n+1}일`;
+}
+function fmtMoney(t, n){ return `${t.cur || ''}${Math.round(n || 0).toLocaleString()}`; }
+function spent(t){ return (t.exp || []).reduce((s, x) => s + (x.amount || 0), 0); }
+function planCount(t){ return Object.values(t.plan || {}).reduce((s, a) => s + a.length, 0); }
+function ddayLabel(t){
+  const td = todayStr();
+  if(td < t.start) return `D-${dayDiff(td, t.start)}`;
+  if(td <= t.end) return `${dayDiff(t.start, td) + 1}일차`;
+  return '';
+}
+function moodEmoji(k){ const m = MOODS.find(x => x.key === k); return m ? m.emoji : ''; }
+
+// ---------- 목록 ----------
+function tripCardHtml(t, hl, label){
+  const sp = spent(t), pct = t.budget > 0 ? Math.min(100, Math.round(sp / t.budget * 100)) : 0;
+  const past = t.end < todayStr(), dd = ddayLabel(t);
+  const meta = past
+    ? `기록 ${Object.keys(t.logs || {}).length}일 · ${fmtMoney(t, sp)}`
+    : `${t.budget > 0 ? `예산 ${fmtMoney(t, sp)} / ${fmtMoney(t, t.budget)}` : `지출 ${fmtMoney(t, sp)}`} · 계획 ${planCount(t)}개`;
+  return `<div class="tr-card${hl ? ' hl' : ''}" data-act="open" data-id="${escA(t.id)}">
+    <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? '<span style="font-size:20px">🐋</span>' : ''}</div>
+    <div class="tr-name">${esc(t.name || '이름 없는 여행')}</div>
+    <div class="tr-sm">${fmtRange(t)}${t.people > 1 ? ` · ${t.people}명` : ''}</div>
+    ${!past && t.budget > 0 ? `<div class="tr-bar"><i style="width:${pct}%"></i></div>` : ''}
+    <div class="tr-sm" style="margin-top:6px">${meta}</div></div>`;
+}
+function tripListHtml(){
+  const td = todayStr();
+  const up = trips.filter(t => t.end >= td).sort((a, b) => a.start.localeCompare(b.start));
+  const past = trips.filter(t => t.end < td).sort((a, b) => b.start.localeCompare(a.start));
+  let h = `<div class="tr-head"><h3>나의 여행</h3><button class="tr-link" data-act="new">＋ 새 여행</button></div>`;
+  if(!trips.length) h += `<div class="tr-empty">아직 여행이 없어요.<br>첫 여행을 만들어 계획부터 세워볼까요?</div>`;
+  up.forEach((t, i) => { h += tripCardHtml(t, i === 0, i === 0 ? (td >= t.start ? '여행 중' : '다음 여행') : '예정'); });
+  if(past.length){ h += `<div class="tr-section">지난 여행</div>`; past.forEach(t => { h += tripCardHtml(t, false, ''); }); }
+  return h;
+}
+
+// ---------- 상세 ----------
+function tripDetailHtml(t){
+  const subs = [['plan','계획'],['pack','준비물'],['budget','예산'],['log','기록']];
+  const dd = ddayLabel(t);
+  const body = tripSub === 'plan' ? planHtml(t) : tripSub === 'pack' ? packHtml(t) : tripSub === 'budget' ? budgetHtml(t) : logHtml(t);
+  return `<div class="tr-row2"><button class="tr-link" data-act="back">‹ 목록</button><span>${dd ? `<span class="tr-dday">${dd}</span> ` : ''}<button class="tr-link" data-act="editTrip">수정</button></span></div>
+    <div class="tr-name big">${esc(t.name || '이름 없는 여행')}</div><div class="tr-sm">${fmtRange(t)}</div>
+    <div class="tr-subs">${subs.map(([k, l]) => `<button class="tr-chip${tripSub === k ? ' on' : ''}" data-act="sub" data-k="${k}">${l}</button>`).join('')}</div>${body}`;
+}
+function planHtml(t){
+  const days = tripDays(t);
+  if(!days.length) return `<div class="tr-empty">여행 기간을 먼저 정해주세요.</div>`;
+  tripDayIdx = Math.max(0, Math.min(tripDayIdx, days.length - 1));
+  const ds = days[tripDayIdx], items = (t.plan || {})[ds] || [];
+  const est = items.reduce((s, x) => s + (x.cost || 0), 0);
+  const rows = items.map(it => `<div class="tr-item${it.done ? ' done' : ''}" data-id="${escA(it.id)}">
+      <span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span>
+      <button class="tr-ck" data-act="togPlan" data-id="${escA(it.id)}" aria-label="완료">${CHECK_SVG}</button>
+      <div class="tr-ibody">${it.time ? `<div class="tr-time">${esc(it.time)}</div>` : ''}<div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div></div>
+      ${it.cost ? `<span class="tr-cost">${fmtMoney(t, it.cost)}</span>` : ''}
+      <button class="tr-x" data-act="delPlan" data-id="${escA(it.id)}">✕</button></div>`).join('');
+  return `<div class="tr-daynav"><button data-act="dayPrev" aria-label="전날">‹</button><b>${tripDayIdx + 1}일차 · ${fmtMD(ds)}</b><button data-act="dayNext" aria-label="다음날">›</button></div>
+    <div class="tr-list" id="trPlanList">${rows || `<div class="tr-empty" style="padding:18px 0">이 날의 일정을 추가해보세요.</div>`}</div>
+    ${est ? `<div class="tr-sm" style="text-align:right;margin:6px 2px">이 날 예상 비용 ${fmtMoney(t, est)}</div>` : ''}
+    <div class="tr-add"><input id="plTime" class="w64" type="text" placeholder="시간" maxlength="8"><input id="plText" class="grow" type="text" placeholder="일정 · 장소"><input id="plCost" class="w64" type="text" inputmode="numeric" placeholder="비용"><button class="tr-addbtn" data-act="addPlan">+</button></div>`;
+}
+function packHtml(t){
+  const pack = t.pack || [], cats = [];
+  pack.forEach(p => { if(!cats.includes(p.cat)) cats.push(p.cat); });
+  const done = pack.filter(p => p.done).length, pct = pack.length ? Math.round(done / pack.length * 100) : 0;
+  let h = `<div class="tr-box" style="padding:10px 14px"><div class="tr-row2"><span class="tr-sm">챙긴 물건 ${done} / ${pack.length}</span><span class="tr-sm">${pct}%</span></div><div class="tr-bar"><i style="width:${pct}%"></i></div></div>`;
+  if(!pack.length) h += `<div class="tr-empty" style="padding:14px 0">챙길 물건을 추가해보세요.</div>`;
+  cats.forEach(c => {
+    h += `<div class="tr-gt">${esc(c)}</div>`;
+    pack.filter(p => p.cat === c).forEach(p => {
+      h += `<div class="tr-item${p.done ? ' done' : ''}"><button class="tr-ck" data-act="togPack" data-id="${escA(p.id)}" aria-label="챙김">${CHECK_SVG}</button><div class="tr-ibody"><div class="tr-text" data-act="editPack" data-id="${escA(p.id)}">${esc(p.text)}</div></div><button class="tr-x" data-act="delPack" data-id="${escA(p.id)}">✕</button></div>`;
+    });
+  });
+  h += `<div class="tr-add"><input id="pkCat" class="w84" list="pkCats" type="text" placeholder="분류" value="${escA(packLastCat)}"><datalist id="pkCats">${cats.map(c => `<option value="${escA(c)}">`).join('')}<option value="서류"><option value="옷"><option value="전자기기"><option value="세면·약"></datalist><input id="pkText" class="grow" type="text" placeholder="챙길 것"><button class="tr-addbtn" data-act="addPack">+</button></div>`;
+  return h;
+}
+function budgetHtml(t){
+  const sp = spent(t), exp = t.exp || [];
+  const days = tripDays(t);
+  if(!exDate || (days.length && !days.includes(exDate))) exDate = days.includes(todayStr()) ? todayStr() : (days[0] || todayStr());
+  const left = t.budget - sp, pct = t.budget > 0 ? Math.min(100, Math.round(sp / t.budget * 100)) : 0;
+  const sums = EXP_CATS.map(c => exp.filter(x => x.cat === c).reduce((s, x) => s + x.amount, 0));
+  const mx = Math.max(1, ...sums);
+  const est = Object.values(t.plan || {}).flat().reduce((s, x) => s + (x.cost || 0), 0);
+  let h = `<div class="tr-box"><div class="tr-row2"><span class="tr-sm">${t.budget > 0 ? `총 예산 ${fmtMoney(t, t.budget)}` : '예산 미설정'}</span>${t.budget > 0 ? `<span class="tr-sm" style="${left < 0 ? 'color:#B6432E' : ''}">${left < 0 ? '초과' : '남음'} ${fmtMoney(t, Math.abs(left))}</span>` : `<button class="tr-link" data-act="editTrip">예산 정하기</button>`}</div>
+    <div style="font-size:24px;font-weight:700;color:var(--ink);margin-top:2px">${fmtMoney(t, sp)} <span class="tr-sm" style="font-weight:400">사용</span></div>
+    ${t.budget > 0 ? `<div class="tr-bar"><i style="width:${pct}%${left < 0 ? ';background:#B6432E' : ''}"></i></div>` : ''}
+    ${est ? `<div class="tr-sm" style="margin-top:6px">계획상 예상 비용 합계 ${fmtMoney(t, est)}</div>` : ''}</div>`;
+  h += `<div class="tr-box" style="padding:8px 14px">${EXP_CATS.map((c, i) => `<div class="tr-catbar"><span>${c}</span><div class="tr-bar"><i style="width:${Math.round(sums[i] / mx * 100)}%"></i></div><span>${fmtMoney(t, sums[i])}</span></div>`).join('')}</div>`;
+  h += `<div class="tr-section">지출 내역</div>`;
+  const sorted = [...exp].sort((a, b) => b.date.localeCompare(a.date));
+  if(!sorted.length) h += `<div class="tr-empty" style="padding:14px 0">아직 지출이 없어요.</div>`;
+  sorted.forEach(x => {
+    const d = dObj(x.date);
+    h += `<div class="tr-ex"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="t">${esc(x.text)} <span class="c">${esc(x.cat)}</span></span><b>${fmtMoney(t, x.amount)}</b><button class="tr-x" data-act="delExp" data-id="${escA(x.id)}">✕</button></div>`;
+  });
+  h += `<div class="tr-add"><input id="exDate" class="w84" type="text" readonly data-act="pickExDate" value="${fmtMD(exDate).replace(/ \(.\)$/, '')}"><select id="exCat">${EXP_CATS.map(c => `<option>${c}</option>`).join('')}</select><span style="flex-basis:100%;height:0"></span><input id="exText" class="grow" type="text" placeholder="내용"><input id="exAmt" class="w84" type="text" inputmode="numeric" placeholder="금액"><button class="tr-addbtn" data-act="addExp">+</button></div>`;
+  return h;
+}
+function logHtml(t){
+  const days = tripDays(t);
+  if(!days.length) return `<div class="tr-empty">여행 기간을 먼저 정해주세요.</div>`;
+  return days.map((ds, i) => {
+    const l = (t.logs || {})[ds];
+    if(!l) return `<div class="tr-logcard empty-day" data-act="openLog" data-date="${ds}">${i + 1}일차 · ${fmtMD(ds)}<br><span class="tr-sm">＋ 이 날 기록하기</span></div>`;
+    return `<div class="tr-logcard" data-act="openLog" data-date="${ds}"><div class="tr-row2"><div><div class="tr-name" style="font-size:16px">${esc(l.title || '제목 없음')}</div><div class="tr-sm">${i + 1}일차 · ${fmtMD(ds)} ${moodEmoji(l.mood)}</div></div><span style="font-size:22px">🐋</span></div>${l.body ? `<div class="pv">${esc(l.body)}</div>` : ''}</div>`;
+  }).join('');
+}
+
+function renderTrip(){
+  const root = $('tripRoot'); if(!root) return;
+  const t = openTripId && tripById(openTripId);
+  root.innerHTML = t ? tripDetailHtml(t) : tripListHtml();
+  if(t && tripSub === 'plan' && $('trPlanList')){
+    enableDrag($('trPlanList'), (from, to) => {
+      const days = tripDays(t), ds = days[tripDayIdx];
+      const arr = [...((t.plan || {})[ds] || [])];
+      const [m] = arr.splice(from, 1); arr.splice(to, 0, m);
+      saveTrip({ ...t, plan: { ...t.plan, [ds]: arr } });
+    });
+  }
+  if(tripFocus){ const f = $(tripFocus); if(f) f.focus(); tripFocus = null; }
+}
+
+function enableDrag(container, onMove){
+  container.querySelectorAll('[data-grip]').forEach(g => {
+    g.onpointerdown = (ev) => {
+      ev.preventDefault();
+      const row = g.closest('.tr-item');
+      const rows = [...container.querySelectorAll('.tr-item')];
+      const from = rows.indexOf(row);
+      const tops = rows.map(r => r.offsetTop + r.offsetHeight / 2);
+      const startY = ev.clientY, base = tops[from];
+      let to = from;
+      row.classList.add('dragging');
+      try{ g.setPointerCapture(ev.pointerId); }catch(e){}
+      g.onpointermove = (e) => {
+        const dy = e.clientY - startY;
+        row.style.transform = `translateY(${dy}px) scale(1.02)`;
+        const c = base + dy; to = 0;
+        tops.forEach((tp, k) => { if(c > tp) to = k; });
+        rows.forEach((r, k) => {
+          if(r === row) return;
+          let sh = 0;
+          if(from < to && k > from && k <= to) sh = -row.offsetHeight;
+          if(from > to && k >= to && k < from) sh = row.offsetHeight;
+          r.style.transition = 'transform .12s'; r.style.transform = sh ? `translateY(${sh}px)` : '';
+        });
+      };
+      const end = () => {
+        g.onpointermove = null; g.onpointerup = null; g.onpointercancel = null;
+        if(to !== from) onMove(from, to); else renderTrip();
+      };
+      g.onpointerup = end; g.onpointercancel = end;
+    };
+  });
+}
+
+function inlineEdit(el, cb){
+  const old = el.textContent;
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.value = old; inp.className = 'tr-inline';
+  el.replaceWith(inp); inp.focus(); inp.select();
+  let done = false;
+  const fin = (save) => { if(done) return; done = true; const v = inp.value.trim(); if(save && v && v !== old) cb(v); else renderTrip(); };
+  inp.onblur = () => fin(true);
+  inp.onkeydown = (e) => { if(e.key === 'Enter') fin(true); if(e.key === 'Escape') fin(false); };
+}
+
+function tripAct(act, el){
+  const t = openTripId ? tripById(openTripId) : null;
+  const id = el.dataset.id;
+  const days = t ? tripDays(t) : [];
+  const ds = days[tripDayIdx];
+  const upd = (patch) => saveTrip({ ...t, ...patch });
+  switch(act){
+    case 'new': return openTripSheet(null);
+    case 'open': openTripId = id; tripSub = 'plan'; {
+      const tr = tripById(id), dl = tripDays(tr), td = todayStr();
+      tripDayIdx = Math.max(0, dl.indexOf(td)); } return renderTrip();
+    case 'back': openTripId = null; return renderTrip();
+    case 'editTrip': return openTripSheet(openTripId);
+    case 'sub': tripSub = el.dataset.k; return renderTrip();
+    case 'dayPrev': if(tripDayIdx > 0){ tripDayIdx--; renderTrip(); } return;
+    case 'dayNext': if(tripDayIdx < days.length - 1){ tripDayIdx++; renderTrip(); } return;
+    case 'addPlan': {
+      const text = $('plText').value.trim();
+      if(!text){ $('plText').focus(); return; }
+      const item = { id:newId(), time:$('plTime').value.trim(), text, cost:toNum($('plCost').value), done:false };
+      tripFocus = 'plText';
+      return upd({ plan: { ...t.plan, [ds]: [...(t.plan[ds] || []), item] } });
+    }
+    case 'togPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, done: !x.done } : x) } });
+    case 'delPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].filter(x => x.id !== id) } });
+    case 'editPlan': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, text: v } : x) } }));
+    case 'addPack': {
+      const text = $('pkText').value.trim(), cat = $('pkCat').value.trim() || '기타';
+      if(!text){ $('pkText').focus(); return; }
+      packLastCat = cat; tripFocus = 'pkText';
+      return upd({ pack: [...t.pack, { id:newId(), cat, text, done:false }] });
+    }
+    case 'togPack': return upd({ pack: t.pack.map(x => x.id === id ? { ...x, done: !x.done } : x) });
+    case 'delPack': return upd({ pack: t.pack.filter(x => x.id !== id) });
+    case 'editPack': return inlineEdit(el, v => upd({ pack: t.pack.map(x => x.id === id ? { ...x, text: v } : x) }));
+    case 'pickExDate': return openDatePicker(exDate, d => { exDate = d; renderTrip(); });
+    case 'addExp': {
+      const amount = toNum($('exAmt').value);
+      if(!amount){ $('exAmt').focus(); return; }
+      tripFocus = 'exText';
+      return upd({ exp: [...t.exp, { id:newId(), date:exDate, cat:$('exCat').value, text:$('exText').value.trim() || $('exCat').value, amount }] });
+    }
+    case 'delExp': return upd({ exp: t.exp.filter(x => x.id !== id) });
+    case 'openLog': return openTripLog(openTripId, el.dataset.date);
+  }
+}
+$('tripRoot').addEventListener('click', (ev) => {
+  const el = ev.target.closest('[data-act]');
+  if(el && $('tripRoot').contains(el)) tripAct(el.dataset.act, el);
+});
+$('tripRoot').addEventListener('keydown', (ev) => {
+  if(ev.key !== 'Enter') return;
+  const map = { plTime:'addPlan', plText:'addPlan', plCost:'addPlan', pkCat:'addPack', pkText:'addPack', exText:'addExp', exAmt:'addExp' };
+  const act = map[ev.target.id];
+  if(act){ ev.preventDefault(); tripAct(act, ev.target); }
+});
+
+// ---------- 시트 (여행 만들기 / 하루 기록) ----------
+function readTripForm(){
+  if(!tripSheet || tripSheet.mode !== 'trip' || !$('tsName')) return;
+  const d = tripSheet.d;
+  d.name = $('tsName').value; d.budget = toNum($('tsBudget').value); d.people = Math.max(1, toNum($('tsPeople').value) || 1);
+}
+function renderTripSheet(){
+  const body = $('tripSheetBody');
+  if(!tripSheet){ $('tripOverlay').classList.remove('open'); return; }
+  if(tripSheet.mode === 'trip'){
+    const d = tripSheet.d, isNew = !tripSheet.id;
+    body.innerHTML = `<div class="sheet-bar"><button class="sheet-close" data-sact="close">‹ 닫기</button><div class="sheet-eyebrow">${isNew ? 'NEW TRIP' : 'EDIT TRIP'}</div><button class="sheet-save" data-sact="saveTrip">저장</button></div>
+    <div class="sheet-card">
+      <div class="field-lab">여행 이름</div>
+      <input type="text" id="tsName" class="title-input" placeholder="예: 교토 3박 4일" value="${escA(d.name)}">
+      <div class="field-lab">기간</div>
+      <div class="tr-add" style="margin:0"><input type="text" readonly id="tsStart" class="grow" data-sact="pickStart" value="${fmtMD(d.start)}"><span class="tr-sm">–</span><input type="text" readonly id="tsEnd" class="grow" data-sact="pickEnd" value="${fmtMD(d.end)}"></div>
+      <div class="field-lab">예산 통화</div>
+      <div class="tr-cur">${['¥','₩','$','€'].map(c => `<button class="tr-chip${d.cur === c ? ' on' : ''}" data-sact="cur" data-k="${c}">${c}</button>`).join('')}</div>
+      <div class="tr-twoline"><div style="flex:1"><div class="field-lab">총 예산</div><input type="text" id="tsBudget" class="tr-field" style="width:100%" inputmode="numeric" placeholder="0" value="${d.budget || ''}"></div><div style="width:90px"><div class="field-lab">인원</div><input type="text" id="tsPeople" class="tr-field" style="width:100%" inputmode="numeric" value="${d.people || 1}"></div></div>
+      ${isNew ? '' : `<div class="sheet-foot"><span></span><button class="delete-btn" data-sact="delTrip">여행 삭제</button></div>`}
+    </div>`;
+  } else {
+    const t = tripById(tripSheet.id); if(!t){ tripSheet = null; return renderTripSheet(); }
+    const ds = tripSheet.date, l = (t.logs || {})[ds], days = tripDays(t), n = days.indexOf(ds) + 1;
+    const exps = (t.exp || []).filter(x => x.date === ds), total = exps.reduce((s, x) => s + x.amount, 0);
+    const plans = (t.plan || {})[ds] || [];
+    body.innerHTML = `<div class="sheet-bar"><button class="sheet-close" data-sact="close">‹ 닫기</button><div class="sheet-eyebrow">TRIP LOG</div><button class="sheet-save" data-sact="saveLog">저장</button></div>
+    <div class="sheet-card">
+      <div class="sheet-date-row"><div class="sheet-date">${fmtMD(ds)}</div><span class="tr-badge" style="margin:0">✈ ${esc(t.name || '여행')}${n ? ` · ${n}일차` : ''}</span></div>
+      <div class="field-lab">이 날의 기분</div>
+      <div class="mood-pick">${MOODS.map(m => `<div class="mood-opt${tripSheet.mood === m.key ? ' sel' : ''}" data-sact="mood" data-k="${m.key}"><span>${m.emoji}</span><small>${m.label}</small></div>`).join('')}</div>
+      <input type="text" id="tlTitle" class="title-input" placeholder="오늘을 한 줄로 표현하면?" value="${escA(l ? l.title : '')}">
+      <textarea id="tlBody" style="min-height:200px;font-size:17px;padding:0 2px;border-bottom:none" placeholder="여행 중 있었던 일, 느낀 점을 적어보세요.">${esc(l ? l.body : '')}</textarea>
+      <div class="tr-box" style="margin:0"><div class="tr-sm">이 날의 지출</div>${exps.length ? `<div class="tr-row2"><b>${fmtMoney(t, total)}</b><span class="tr-sm">${esc(exps.map(x => x.text).join(' · '))}</span></div>` : `<div class="tr-sm">기록된 지출이 없어요</div>`}</div>
+      <div class="tr-box" style="margin:0"><div class="tr-sm">이 날의 계획</div>${plans.length ? `<div style="font-size:14px;line-height:1.7;color:var(--ink)">${plans.map(p => `${p.done ? '✓' : '·'} ${esc(p.text)}`).join('<br>')}</div>` : `<div class="tr-sm">계획이 없어요</div>`}</div>
+      <div class="sheet-foot"><button class="tr-link" data-sact="gotoTrip">여행으로 이동 ›</button>${l ? `<button class="delete-btn" data-sact="delLog">기록 삭제</button>` : '<span></span>'}</div>
+    </div>`;
+    const ta = $('tlBody'); autoGrowTextarea(ta); ta.oninput = () => autoGrowTextarea(ta);
+    requestAnimationFrame(() => autoGrowTextarea(ta));
+  }
+  $('tripOverlay').classList.add('open');
+}
+function openTripSheet(id){
+  const t = id ? tripById(id) : null, td = todayStr();
+  const e = new Date(); e.setDate(e.getDate() + 2);
+  tripSheet = { mode:'trip', id, d: t ? { name:t.name, start:t.start, end:t.end, cur:t.cur, budget:t.budget, people:t.people } : { name:'', start:td, end:dStr(e), cur:'¥', budget:0, people:1 } };
+  renderTripSheet();
+}
+function openTripLog(tripId, ds){
+  const t = tripById(tripId); if(!t) return;
+  const l = (t.logs || {})[ds];
+  tripSheet = { mode:'log', id:tripId, date:ds, mood: l ? l.mood : 'happy' };
+  renderTripSheet();
+}
+$('tripOverlay').addEventListener('click', (ev) => {
+  const el = ev.target.closest('[data-sact]'); if(!el || !tripSheet) return;
+  const a = el.dataset.sact;
+  if(a === 'close'){ tripSheet = null; return renderTripSheet(); }
+  if(tripSheet.mode === 'trip'){
+    readTripForm(); const d = tripSheet.d;
+    if(a === 'cur'){ d.cur = el.dataset.k; return renderTripSheet(); }
+    if(a === 'pickStart') return openDatePicker(d.start, v => { d.start = v; if(d.end < v) d.end = v; renderTripSheet(); });
+    if(a === 'pickEnd') return openDatePicker(d.end, v => { d.end = v; if(d.start > v) d.start = v; renderTripSheet(); });
+    if(a === 'saveTrip'){
+      if(!d.name.trim()){ toast('여행 이름을 입력해주세요'); return; }
+      const old = tripSheet.id ? tripById(tripSheet.id) : null;
+      const t = normTrip({ ...(old || {}), id: old ? old.id : newId(), createdAt: old ? old.createdAt : Date.now(), name:d.name.trim(), start:d.start, end:d.end, cur:d.cur, budget:d.budget, people:d.people });
+      tripSheet = null; renderTripSheet(); saveTrip(t);
+      if(!old){ openTripId = t.id; tripSub = 'plan'; tripDayIdx = 0; renderTrip(); }
+      return;
+    }
+    if(a === 'delTrip'){
+      if(!confirm('이 여행을 삭제할까요?\n계획·예산·기록이 모두 사라져요.')) return;
+      const id = tripSheet.id; tripSheet = null; renderTripSheet();
+      trips = trips.filter(x => x.id !== id); openTripId = null;
+      tripsCol().doc(id).delete().catch(err => toast('여행 삭제 실패: ' + (err.code || err.message)));
+      refreshTripViews();
+    }
+    return;
+  }
+  const t = tripById(tripSheet.id), ds = tripSheet.date;
+  if(a === 'mood'){ tripSheet.mood = el.dataset.k; el.parentNode.querySelectorAll('.mood-opt').forEach(o => o.classList.toggle('sel', o === el)); return; }
+  if(a === 'saveLog'){
+    const title = $('tlTitle').value.trim(), body = $('tlBody').value.trim();
+    if(!title && !body){ toast('내용을 입력해주세요'); return; }
+    const mood = tripSheet.mood || 'happy';
+    tripSheet = null; renderTripSheet();
+    return saveTrip({ ...t, logs: { ...t.logs, [ds]: { title, body, mood, updatedAt: Date.now() } } });
+  }
+  if(a === 'delLog'){
+    if(!confirm('이 날의 여행 기록을 삭제할까요?')) return;
+    const logs = { ...t.logs }; delete logs[ds];
+    tripSheet = null; renderTripSheet();
+    return saveTrip({ ...t, logs });
+  }
+  if(a === 'gotoTrip'){
+    tripSheet = null; renderTripSheet();
+    openTripId = t.id; tripSub = 'log'; renderTrip(); switchTab('trip');
+  }
+});
+
+// 일기 탭에 보여줄 여행 기록
+function tripLogEntries(){
+  const out = [];
+  trips.forEach(t => {
+    const days = tripDays(t);
+    Object.entries(t.logs || {}).forEach(([d, l]) => out.push({ id:'trip:' + t.id + ':' + d, date:d, title:l.title, body:l.body, mood:l.mood, tags:[], isTrip:true, tripId:t.id, tripName:t.name, dayNo: days.indexOf(d) + 1, createdAt: l.updatedAt || 0 }));
+  });
+  return out;
+}
+
+const TAB_ORDER = ['home', 'todo', 'list', 'trip'];
 let tabSwipeLock = false;
 
 function updateTabButtons(tab){
   $('tabHomeBtn').classList.toggle('active', tab === 'home');
   $('tabListBtn').classList.toggle('active', tab === 'list');
   $('tabTodoBtn').classList.toggle('active', tab === 'todo');
+  $('tabTripBtn').classList.toggle('active', tab === 'trip');
 }
 
 function switchTab(tab){
@@ -1865,6 +2335,7 @@ function switchTab(tab){
 $('tabHomeBtn').onclick = () => switchTab('home');
 $('tabListBtn').onclick = () => switchTab('list');
 $('tabTodoBtn').onclick = () => switchTab('todo');
+$('tabTripBtn').onclick = () => switchTab('trip');
 document.querySelectorAll('.home-head[data-goto]').forEach(h => { h.onclick = () => switchTab(h.dataset.goto); });
 
 $('tabSwipeContainer').addEventListener('scroll', () => {

@@ -1002,6 +1002,7 @@
   .tr-t2{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; width:40px; flex:none; cursor:text; }
   .tr-line .tr-text{ flex:1; min-width:0; line-height:1.35; }
   .tr-cost{ cursor:text; min-width:14px; text-align:right; }
+  .tr-line .tr-cost{ margin-left:auto; flex:none; }
   .tr-time{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
   .tr-text{ word-break:break-word; cursor:text; }
   .tr-time, .tr-cost, .tr-gt, .tr-ex .t span, .tr-ex b{ cursor:text; }
@@ -1050,6 +1051,20 @@
   body{ font-synthesis-weight:none; }
   .eyebrow, .sheet-eyebrow, .tab-btn, header .sub, .cal-day .day-num, .num-corner, .tr-dday, .tr-t2, .tr-cost, .tr-sm, .tr-catbar, .tr-focus, .tr-focus-line, .todo-date, .cal-weekdays, .home-head span{ font-family:var(--font-ui); }
   h1, h3, .stat .num, .home-big, .home-entry-title, .home-head b, .tr-name, .tr-head h3, .sheet-date, .cal-title, .entry-title, .entry-day b, .month-head, .count-num{ font-family:var(--font-head); font-weight:500; }
+
+  /* 작은 화면(휴대폰): 손잡이·✕를 얇게, 시간/비용은 글자 아래 작은 줄로 → 글자 폭 확보 */
+  @media (max-width:480px){
+    .todo-item, .tr-item{ gap:7px; }
+    .todo-grip, .tr-grip{ width:14px; }
+    .todo-grip svg, .tr-grip svg{ width:14px; height:14px; }
+    .todo-del, .tr-x{ font-size:12px; padding:2px 0; opacity:.65; }
+    .tr-ex{ gap:6px; }
+    .tr-line{ flex-wrap:wrap; gap:0 8px; }
+    .tr-line .tr-text{ order:1; flex:1 1 100%; }
+    .tr-line .tr-t2{ order:2; width:auto; font-size:11px; }
+    .tr-line .tr-cost{ order:3; margin-left:0; font-size:11px; }
+    .tr-line .tr-t2.ph, .tr-line .tr-cost.ph{ display:none; }
+  }
   /* 할일: 날짜 이동 / 순서 편집 */
   .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
   .todo-datebar .todo-date{ margin:0; }
@@ -1090,7 +1105,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-b</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-c</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2070,8 +2085,7 @@ function planHtml(t){
   const rows = items.map(it => `<div class="tr-item${it.done ? ' done' : ''}" data-id="${escA(it.id)}">
       <span class="tr-grip" data-grip aria-label="끌어서 순서 변경">${GRIP_SVG}</span>
       <button class="tr-ck" data-act="togPlan" data-id="${escA(it.id)}" aria-label="완료">${CHECK_SVG}</button>
-      <div class="tr-ibody tr-line"><span class="tr-t2${it.time ? '' : ' ph'}" data-act="editPlanTime" data-id="${escA(it.id)}">${it.time ? esc(it.time) : '--:--'}</span><div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div></div>
-      <span class="tr-cost${it.cost ? '' : ' ph'}" data-act="editPlanCost" data-id="${escA(it.id)}">${it.cost ? fmtMoney(t, it.cost) : '+'}</span>
+      <div class="tr-ibody tr-line"><span class="tr-t2${it.time ? '' : ' ph'}" data-act="editPlanTime" data-id="${escA(it.id)}">${it.time ? esc(it.time) : '--:--'}</span><div class="tr-text" data-act="editPlan" data-id="${escA(it.id)}">${esc(it.text)}</div><span class="tr-cost${it.cost ? '' : ' ph'}" data-act="editPlanCost" data-id="${escA(it.id)}">${it.cost ? fmtMoney(t, it.cost) : '+'}</span></div>
       <button class="tr-x" data-act="delPlan" data-id="${escA(it.id)}">✕</button></div>`).join('');
   return `<div class="tr-daynav"><button data-act="dayPrev" aria-label="전날">‹</button><b>${tripDayIdx + 1}일차 · ${fmtMD(ds)}</b><button data-act="dayNext" aria-label="다음날">›</button></div>
     <div class="tr-list" id="trPlanList">${rows || `<div class="tr-empty" style="padding:18px 0">이 날의 일정을 추가해보세요.</div>`}</div>

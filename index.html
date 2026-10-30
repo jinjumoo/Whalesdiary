@@ -12,9 +12,11 @@
 <meta name="apple-mobile-web-app-title" content="고래의 하루">
 <meta name="theme-color" content="#FFFBEF">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=EB+Garamond:wght@400;500;600&family=Song+Myung&family=Noto+Sans+KR:wght@400;500&display=swap');
 
   :root{
+    --font-body: 'EB Garamond','Song Myung',Georgia,serif;
+    --font-head: 'Playfair Display','Song Myung',Georgia,serif;
     --bg: #FFFBEF;
     --bg-deep: #FFF3D2;
     --card: #FFFBEF;
@@ -32,7 +34,7 @@
 
   html{ overflow-x: hidden; }
   body{
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     background: var(--bg);
     min-height: 100vh;
     color: var(--ink);
@@ -79,7 +81,7 @@
     line-height: 1;
   }
   h1{
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-weight: 700;
     font-size: 28px;
     letter-spacing: -0.01em;
@@ -94,7 +96,7 @@
     font-size: clamp(13px, 3.4vw, 14.5px);
     color: var(--ink-soft);
     margin-top: 4px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-style: italic;
   }
 
@@ -111,7 +113,7 @@
     border-right: 1px solid var(--line);
   }
   .stat:last-child{ border-right: none; }
-  .stat .num{ font-family:'Gowun Batang',serif; font-size:19px; font-weight:700; color: var(--ink); }
+  .stat .num{ font-family:var(--font-body); font-size:19px; font-weight:700; color: var(--ink); }
   .stat .lab{ font-size: 10.5px; color: var(--ink-soft); margin-top:3px; letter-spacing: 0.02em; }
 
   /* New entry button */
@@ -121,7 +123,7 @@
     border: 1px solid var(--ink);
     border-radius: 2px;
     padding: 14px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 15px;
     font-weight: 600;
     color: var(--ink);
@@ -145,7 +147,7 @@
     border-bottom: none;
     border-radius: 12px 12px 0 0;
     padding: 10px 20px 12px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: 600;
     color: var(--ink-soft);
@@ -196,7 +198,7 @@
     margin-bottom: 16px;
   }
   .cal-title{
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 16px;
     font-weight: 700;
     color: var(--ink);
@@ -273,7 +275,7 @@
 
   /* Section title */
   .sec-title{
-    font-family:'Gowun Batang', serif;
+    font-family:var(--font-body);
     font-size: 15.5px;
     font-weight: 600;
     color: var(--ink-soft);
@@ -296,7 +298,7 @@
     color: var(--ink-soft);
     cursor: pointer;
     white-space:nowrap;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
   }
   .chip.active{
     color: var(--ink);
@@ -331,7 +333,7 @@
     opacity: 0.85;
   }
   .entry-title{
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: clamp(16.5px, 4.3vw, 18.5px);
     font-weight: 700;
     margin-bottom: 6px;
@@ -362,7 +364,7 @@
     color: var(--ink-soft);
   }
   .empty .logo-mark{ margin: 0 auto 18px; opacity: 0.3; }
-  .empty p{ font-size: 14.5px; line-height:1.7; font-family: 'Gowun Batang', serif; }
+  .empty p{ font-size: 14.5px; line-height:1.7; font-family: var(--font-body); }
 
   /* Trash */
   .trash-link{
@@ -376,7 +378,7 @@
     border: none;
     cursor: pointer;
     margin: 18px auto 4px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
   }
   .trash-header{
     display: flex;
@@ -391,7 +393,7 @@
     background: transparent;
     color: #A5684A;
     cursor: pointer;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
   }
   .trash-row{
     display: flex;
@@ -422,12 +424,12 @@
     color: var(--ink);
     cursor: pointer;
     white-space: nowrap;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
   }
 
   /* Todo */
   .todo-date{
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 16px;
     font-weight: 700;
     color: var(--ink);
@@ -444,7 +446,7 @@
     border: none;
     border-bottom: 1px solid var(--line);
     padding: 8px 2px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 14.5px;
     color: var(--ink);
     outline: none;
@@ -509,7 +511,7 @@
     border: none;
     border-bottom: 1px solid var(--ink);
     padding: 0 0 2px 0;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 15.5px;
     color: var(--ink);
     outline: none;
@@ -528,7 +530,7 @@
     font-size: 12px;
     color: var(--ink-soft);
     margin-top: 20px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
   }
 
   /* Modal / editor */
@@ -568,7 +570,7 @@
     padding-bottom: 14px;
   }
   .sheet-head h2{
-    font-family:'Gowun Batang', serif;
+    font-family:var(--font-body);
     font-size: 19px;
     font-weight: 700;
   }
@@ -604,7 +606,7 @@
     border-bottom: 1px solid var(--line);
     border-radius: 0;
     padding: 10px 2px;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
     font-size: 16px;
     color: var(--ink);
     outline:none;
@@ -684,7 +686,7 @@
     border:none;
     border-radius: 2px;
     padding: 15px;
-    font-family:'Gowun Batang', serif;
+    font-family:var(--font-body);
     font-size: 15px;
     font-weight: 700;
     color: var(--bg);
@@ -719,7 +721,7 @@
     opacity:0;
     transition: opacity 0.2s;
     pointer-events:none;
-    font-family: 'Gowun Batang', serif;
+    font-family: var(--font-body);
   }
   .toast.show{ opacity: 1; }
 
@@ -782,7 +784,7 @@
   .home-top .home-card.col{ flex-direction:column; align-items:flex-start; justify-content:center; gap:6px; }
   .home-top .home-card{ padding:10px 10px; }
   .ring-wrap{ width:44px; height:44px; flex-shrink:0; }
-  .home-big{ font-family:'Gowun Batang',serif; font-size:clamp(18px,5vw,22px); font-weight:700; color:var(--ink); line-height:1.1; }
+  .home-big{ font-family:var(--font-body); font-size:clamp(18px,5vw,22px); font-weight:700; color:var(--ink); line-height:1.1; }
   .home-big small{ font-size:12.5px; font-weight:400; color:var(--ink-soft); }
   .home-lab{ font-size:12px; color:var(--ink-soft); margin-top:2px; white-space:nowrap; }
   .week-stamps{ display:flex; gap:1px; }
@@ -792,7 +794,7 @@
   .home-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
   .home-head.link{ cursor:pointer; }
   .home-head.link span::after{ content:" ›"; font-size:15px; }
-  .home-head b{ font-family:'Gowun Batang',serif; font-size:clamp(15px,4vw,17px); color:var(--ink); }
+  .home-head b{ font-family:var(--font-body); font-size:clamp(15px,4vw,17px); color:var(--ink); }
   .home-head span{ font-size:12px; color:var(--ink-soft); }
   .bar{ height:8px; border-radius:4px; background:#EFE4CF; overflow:hidden; margin-bottom:10px; }
   .bar > div{ height:100%; background:#E8B64C; border-radius:4px; }
@@ -804,8 +806,8 @@
   .home-todo .tag{ margin-left:auto; font-size:11px; }
   .home-more{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
   .home-entry-text{ font-size:clamp(14.5px,3.8vw,16px); line-height:1.6; color:var(--ink-soft); margin-bottom:10px; }
-  .home-entry-title{ font-family:'Gowun Batang',serif; font-weight:700; font-size:clamp(16px,4.2vw,18px); color:var(--ink); margin-bottom:4px; }
-  .home-btn{ border:1px solid var(--yolk-deep); background: var(--yolk); color: var(--ink); border-radius:12px; padding:10px 18px; font-family:'Gowun Batang',serif; font-size:clamp(14px,3.8vw,16px); font-weight:700; cursor:pointer; }
+  .home-entry-title{ font-family:var(--font-body); font-weight:700; font-size:clamp(16px,4.2vw,18px); color:var(--ink); margin-bottom:4px; }
+  .home-btn{ border:1px solid var(--yolk-deep); background: var(--yolk); color: var(--ink); border-radius:12px; padding:10px 18px; font-family:var(--font-body); font-size:clamp(14px,3.8vw,16px); font-weight:700; cursor:pointer; }
 
   /* Weekly chart (할일 탭) */
   .week-chart{ border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:22px; }
@@ -826,8 +828,8 @@
   .mood-opt small{ font-size:11px; color: var(--ink-soft); }
 
   /* ===== D안 시안 반영 ===== */
-  body{ font-family:'Gowun Batang',serif; }
-  .eyebrow{ font-family:'Gowun Batang',serif; letter-spacing:.22em; font-size:12px; font-weight:400; }
+  body{ font-family:var(--font-body); }
+  .eyebrow{ font-family:var(--font-body); letter-spacing:.22em; font-size:12px; font-weight:400; }
   .tab-bar{ gap:5px; }
   .tab-btn{ border:1.5px solid #D9CDBB; border-bottom:none; padding:8px 14px 10px; font-size:15px; font-weight:400; color:#7A6A53; }
   .tab-btn.active{ border-color:#BFAF9B; background:#FFE3A3; color:var(--ink); font-weight:700; padding-bottom:11px; }
@@ -964,8 +966,8 @@
   /* ===== 여행 ===== */
   .tr-row2{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
   .tr-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-  .tr-head h3{ margin:0; font-family:'Gowun Batang',serif; font-size:19px; color:var(--ink); }
-  .tr-name{ font-family:'Gowun Batang',serif; font-size:19px; font-weight:700; color:var(--ink); margin:2px 0; }
+  .tr-head h3{ margin:0; font-family:var(--font-body); font-size:19px; color:var(--ink); }
+  .tr-name{ font-family:var(--font-body); font-size:19px; font-weight:700; color:var(--ink); margin:2px 0; }
   .tr-name.big{ font-size:22px; margin:6px 0 2px; }
   .tr-sm{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; }
   .tr-link{ background:none; border:none; font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#7A6A53; padding:6px 2px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
@@ -1010,7 +1012,7 @@
   .tr-ck svg{ width:20px; height:20px; display:none; }
   .tr-item.done .tr-ck svg{ display:block; }
   .tr-add{ display:flex; gap:6px; align-items:flex-end; margin:12px 0 4px; flex-wrap:wrap; }
-  .tr-add input, .tr-add select, .tr-inline, .tr-field{ background:transparent; border:none; border-bottom:1px solid var(--line); padding:8px 2px; font-family:'Gowun Batang',serif; font-size:15px; color:var(--ink); outline:none; border-radius:0; min-width:0; }
+  .tr-add input, .tr-add select, .tr-inline, .tr-field{ background:transparent; border:none; border-bottom:1px solid var(--line); padding:8px 2px; font-family:var(--font-body); font-size:15px; color:var(--ink); outline:none; border-radius:0; min-width:0; }
   .tr-add input:focus, .tr-inline:focus, .tr-field:focus{ border-bottom-color:var(--ink); }
   .tr-add .grow{ flex:1 1 90px; }
   .tr-add .w64{ width:64px; } .tr-add .w84{ width:84px; }
@@ -1042,6 +1044,10 @@
   .todo-star-btn.on{ border-style:solid; border-color:#B6432E; color:#B6432E; }
   .todo-star-btn .rstar{ margin:0 3px 0 0; width:13px; height:13px; display:inline-block; vertical-align:-2px; }
 
+
+  /* 글씨체: 독서일지와 동일 구성 (영문·숫자 EB Garamond / Playfair, 한글 송명) */
+  body{ font-synthesis-weight:none; }
+  h1, h3, .stat .num, .home-big, .home-entry-title, .home-head b, .tr-name, .tr-head h3, .sheet-date, .cal-title, .entry-title, .entry-day b, .month-head, .count-num{ font-family:var(--font-head); font-weight:500; }
   /* 할일: 날짜 이동 / 순서 편집 */
   .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
   .todo-datebar .todo-date{ margin:0; }
@@ -1082,7 +1088,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.32-b</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-a</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 

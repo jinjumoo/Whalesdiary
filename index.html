@@ -974,9 +974,11 @@
   .tr-dday{ font-family:'Noto Sans KR',sans-serif; font-size:11px; font-weight:700; background:#FFE3A3; border:1.5px solid #BFAF9B; border-radius:10px; padding:2px 8px; color:var(--ink); }
   .tr-bar{ height:7px; border-radius:4px; background:#EFE4CF; overflow:hidden; margin:8px 0 2px; }
   .tr-bar i{ display:block; height:100%; background:#E8B64C; }
-  .tr-focus{ border:1.5px solid #BFAF9B; border-left:5px solid #E8B64C; border-radius:10px; background:#FFF6DA; padding:8px 12px; margin:10px 0 0; font-size:14.5px; line-height:1.5; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .tr-focus small{ display:block; font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
-  .tr-focus-line{ font-size:13.5px; color:var(--ink); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tr-focus{ display:flex; gap:10px; align-items:baseline; border-top:1px dotted #BFAF9B; border-bottom:1px dotted #BFAF9B; padding:7px 2px; margin:10px 0 0; font-size:15px; color:var(--ink); white-space:nowrap; overflow:hidden; }
+  .tr-focus .lbl{ font-family:'Noto Sans KR',sans-serif; font-size:11px; font-weight:600; color:#7A6A53; flex:none; }
+  .tr-focus .txt{ min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .tr-focus-line{ display:flex; gap:8px; align-items:baseline; font-size:13.5px; color:var(--ink); margin-top:8px; padding-top:6px; border-top:1px dotted #BFAF9B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tr-focus-line .lbl{ font-family:'Noto Sans KR',sans-serif; font-size:11px; font-weight:600; color:#7A6A53; flex:none; }
   .tr-chips1{ display:flex; gap:5px; flex-wrap:nowrap; margin-top:6px; }
   .tr-chips1 button{ font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; border:1.5px dashed #D9CDBB; border-radius:12px; background:none; padding:3px 9px; cursor:pointer; white-space:nowrap; }
   .tr-subs{ display:flex; gap:6px; margin:12px 0 10px; }
@@ -1027,6 +1029,15 @@
   .tr-plus{ position:static; }
   .tr-twoline{ display:flex; gap:12px; align-items:center; }
 
+  .rstar{ width:14px; height:14px; margin-right:6px; flex:none; cursor:pointer; display:block; }
+  .rstar-wrap{ display:flex; align-items:center; flex:none; }
+  .todo-text.hasstar, .home-todo .todo-text.hasstar{ display:flex; align-items:center; }
+  .home-todo .rstar{ cursor:default; }
+  .todo-text{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+  .todo-star-btn{ background:none; border:1.5px dashed #D9CDBB; border-radius:12px; color:#7A6A53; font-family:'Noto Sans KR',sans-serif; font-size:12px; padding:3px 9px; cursor:pointer; white-space:nowrap; flex:none; align-self:center; }
+  .todo-star-btn.on{ border-style:solid; border-color:#B6432E; color:#B6432E; }
+  .todo-star-btn .rstar{ margin:0 3px 0 0; width:13px; height:13px; display:inline-block; vertical-align:-2px; }
+
   /* 할일: 날짜 이동 / 순서 편집 */
   .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
   .todo-datebar .todo-date{ margin:0; }
@@ -1067,7 +1078,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-b</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.31-f</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1129,6 +1140,7 @@
         </div>
         <div class="todo-add-row">
           <input type="text" id="todoInput" placeholder="오늘 할 일을 입력하세요">
+          <button class="todo-star-btn" id="todoStarBtn" type="button">☆ 꼭</button>
           <button class="todo-add-btn" id="todoAddBtn">+</button>
         </div>
         <div id="todoList"></div>
@@ -1214,6 +1226,8 @@
   }catch(e){}
 })();
 
+const STAR_SVG = '<svg class="rstar" viewBox="0 0 24 24" aria-label="꼭 해야 할 일"><path d="M12.2 3.2 L14.8 9 L21 9.6 L16.3 13.8 L17.7 20 L12 16.7 L6.5 20.1 L7.8 13.9 L3.1 9.8 L9.4 9.1 Z" fill="#B6432E" stroke="#B6432E" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+let newStar = false;
 const MOODS = [
   {key:'happy', emoji:'😊', label:'좋음'},
   {key:'calm', emoji:'😌', label:'평온'},
@@ -1401,7 +1415,7 @@ function todoRowHtml(date, t){
         <path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" transform="rotate(-4 10 10)"/>
         <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
       </svg></button>
-      <div class="todo-text" data-edit="${escapeAttr(t.id)}" data-date="${date}">${escapeHtml(t.text)}</div>
+      <div class="todo-text${t.star ? ' hasstar' : ''}" data-edit="${escapeAttr(t.id)}" data-date="${date}">${t.star ? `<span class="rstar-wrap" data-unstar="${escapeAttr(t.id)}" data-date="${date}">${STAR_SVG}</span>` : ''}<span>${escapeHtml(t.text)}</span></div>
       ${todoReorder ? `<span class="todo-grip" data-grip="${escapeAttr(t.id)}" data-date="${date}" aria-label="끌어서 순서 변경"><svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg></span>` : ''}
       <button class="todo-del" data-del="${escapeAttr(t.id)}" data-date="${date}">✕</button>
     </div>`;
@@ -1470,7 +1484,7 @@ function renderHome(){
   let list = rows.slice(0, MAX).map(r => `
     <div class="home-todo${r.t.done ? ' done' : ''}">
       <button class="todo-check" data-home-toggle="${escapeAttr(r.t.id)}" data-date="${r.date}"><svg viewBox="0 0 20 20" fill="none"><path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/></svg></button>
-      <div class="todo-text">${escapeHtml(r.t.text)}</div>
+      <div class="todo-text${r.t.star ? ' hasstar' : ''}">${r.t.star ? `<span class="rstar-wrap">${STAR_SVG}</span>` : ''}<span>${escapeHtml(r.t.text)}</span></div>
       ${r.carry ? `<span class="tag">${r.date.slice(5).replace('-','/')} 이월</span>` : ''}
     </div>`).join('');
   if(rows.length === 0) list = `<div class="home-more">할일 탭에서 오늘 할 일을 추가해보세요.</div>`;
@@ -1585,8 +1599,16 @@ function renderTodoList(){
       renderTodoList();
     };
   });
+  const toggleStar = (date, id) => { setItems(date, getItems(date).map(t => t.id === id ? { ...t, star: !t.star } : t)); renderTodoList(); };
   el.querySelectorAll('[data-edit]').forEach(div => {
-    div.onclick = () => {
+    let timer = null, fired = false;
+    const cancel = () => { clearTimeout(timer); timer = null; };
+    div.addEventListener('pointerdown', () => { fired = false; cancel(); timer = setTimeout(() => { fired = true; if(navigator.vibrate) try{ navigator.vibrate(15); }catch(e){} toggleStar(div.dataset.date, div.dataset.edit); }, 550); });
+    ['pointerup','pointerleave','pointercancel','pointermove'].forEach(ev => div.addEventListener(ev, cancel));
+    div.addEventListener('contextmenu', e => e.preventDefault());
+    div.addEventListener('click', e => { if(fired){ e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
+    div.onclick = (ev) => {
+      if(ev.target.closest('[data-unstar]')){ ev.stopPropagation(); toggleStar(div.dataset.date, div.dataset.edit); return; }
       const id = div.dataset.edit, date = div.dataset.date;
       const current = getItems(date).find(t => t.id === id);
       if(!current) return;
@@ -1633,8 +1655,8 @@ function addTodo(){
   const input = $('todoInput');
   const text = input.value.trim();
   if(!text) return;
-  setItems(viewDate, [...getItems(viewDate), { id: Date.now().toString(), text, done: false }]);
-  input.value = '';
+  setItems(viewDate, [...getItems(viewDate), { id: Date.now().toString(), text, done: false, star: newStar }]);
+  input.value = ''; newStar = false; syncStarBtn();
   renderTodoList();
 }
 
@@ -1650,6 +1672,8 @@ $('todoPick').addEventListener('click', () => openDatePicker(viewDate, ds => { v
 $('todoTodayBtn').onclick = () => { viewDate = todayStr(); renderTodoList(); };
 $('todoReorderBtn').onclick = () => { todoReorder = !todoReorder; renderTodoList(); };
 $('todoAddBtn').onclick = addTodo;
+function syncStarBtn(){ const b = $('todoStarBtn'); b.classList.toggle('on', newStar); b.innerHTML = newStar ? STAR_SVG + '꼭' : '☆ 꼭'; }
+$('todoStarBtn').onclick = () => { newStar = !newStar; syncStarBtn(); $('todoInput').focus(); };
 $('todoInput').addEventListener('keydown', (ev) => {
   if(ev.key === 'Enter'){ ev.preventDefault(); addTodo(); }
 });
@@ -2007,7 +2031,7 @@ function tripCardHtml(t, hl, label){
     <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? '<span style="font-size:20px">🐋</span>' : ''}</div>
     <div class="tr-name">${esc(t.name || '이름 없는 여행')}</div>
     <div class="tr-sm">${fmtRange(t)}${t.people > 1 ? ` · ${t.people}명` : ''}</div>
-    ${t.focus ? `<div class="tr-focus-line">“${esc(t.focus)}”</div>` : ''}
+    ${t.focus ? `<div class="tr-focus-line"><span class="lbl">다짐</span>${esc(t.focus)}</div>` : ''}
     ${!past && t.budget > 0 ? `<div class="tr-bar"><i style="width:${pct}%"></i></div>` : ''}
     <div class="tr-sm" style="margin-top:6px">${meta}</div></div>`;
 }
@@ -2029,7 +2053,7 @@ function tripDetailHtml(t){
   const body = tripSub === 'plan' ? planHtml(t) : tripSub === 'pack' ? packHtml(t) : tripSub === 'budget' ? budgetHtml(t) : logHtml(t);
   return `<div class="tr-row2"><button class="tr-link" data-act="back">‹ 목록</button><span>${dd ? `<span class="tr-dday">${dd}</span> ` : ''}<button class="tr-link" data-act="editTrip">수정</button></span></div>
     <div class="tr-name big">${esc(t.name || '이름 없는 여행')}</div><div class="tr-sm">${fmtRange(t)}</div>
-    ${t.focus ? `<div class="tr-focus"><small>${FOCUS_LABEL}</small>${esc(t.focus)}</div>` : ''}
+    ${t.focus ? `<div class="tr-focus"><span class="lbl">${FOCUS_LABEL}</span><span class="txt">${esc(t.focus)}</span></div>` : ''}
     <div class="tr-subs">${subs.map(([k, l]) => `<button class="tr-chip${tripSub === k ? ' on' : ''}" data-act="sub" data-k="${k}">${l}</button>`).join('')}</div>${body}`;
 }
 function planHtml(t){

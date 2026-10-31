@@ -831,10 +831,11 @@
   /* ===== D안 시안 반영 ===== */
   body{ font-family:var(--font-body); }
   .eyebrow{ font-family:var(--font-body); letter-spacing:.22em; font-size:12px; font-weight:400; }
-  .tab-bar{ gap:5px; }
+  .tab-bar{ gap:5px; padding-left:18px; z-index:auto; }
+  .tab-btn{ z-index:0; top:0; }
   .tab-btn{ border:1.5px solid #D9CDBB; border-bottom:none; padding:8px 14px 10px; font-size:15px; font-weight:400; color:#7A6A53; }
-  .tab-btn.active{ border-color:#BFAF9B; background:#FFE3A3; color:var(--ink); font-weight:700; padding-bottom:11px; }
-  .tab-card{ border:1.5px solid #BFAF9B; border-radius:18px; }
+  .tab-btn.active{ border-color:#BFAF9B; background:#FFE3A3; color:var(--ink); font-weight:700; padding-bottom:11px; z-index:3; top:0; margin-bottom:0; }
+  .tab-card{ border:1.5px solid #BFAF9B; border-radius:18px; z-index:1; }
   .home-card, .week-chart{ border:1.5px solid #D9CDBB; }
   .chip, .tag, .home-lab, .home-head span, .cal-weekdays, .week-bar span{ font-family:'Noto Sans KR',sans-serif; }
 
@@ -1115,7 +1116,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-i</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-j</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1521,6 +1522,7 @@ function renderHome(){
   overdueGroups().forEach(g => g.items.filter(t=>!t.done).forEach(t => rows.push({ date: g.date, t, carry: true })));
   items.forEach(t => rows.push({ date: ts, t, carry: false }));
   const MAX = 5;
+  rows.sort((a, b) => (a.t.done ? 1 : 0) - (b.t.done ? 1 : 0));
   let list = rows.slice(0, MAX).map(r => `
     <div class="home-todo${r.t.done ? ' done' : ''}">
       <button class="todo-check" data-home-toggle="${escapeAttr(r.t.id)}" data-date="${r.date}"><svg viewBox="0 0 20 20" fill="none"><path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/></svg></button>

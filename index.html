@@ -808,7 +808,7 @@
   .home-todo.done .todo-check{ border-color:#C0503C; }
   .home-todo.done .todo-check svg{ display:block; }
   .home-todo.done .todo-text{ color:var(--ink-soft); text-decoration:line-through; }
-  .home-todo .tag{ margin-left:auto; font-size:11px; }
+  .home-todo .tag{ margin-left:auto; font-size:10px; font-style:normal; color:#B0A08A; white-space:nowrap; flex:none; }
   .home-more{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
   .home-entry-text{ font-size:clamp(14.5px,3.8vw,16px); line-height:1.6; color:var(--ink-soft); margin-bottom:10px; }
   .home-entry-title{ font-family:var(--font-body); font-weight:700; font-size:clamp(16px,4.2vw,18px); color:var(--ink); margin-bottom:4px; }
@@ -1120,7 +1120,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-l</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-m</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1531,7 +1531,7 @@ function renderHome(){
     <div class="home-todo${r.t.done ? ' done' : ''}">
       <button class="todo-check" data-home-toggle="${escapeAttr(r.t.id)}" data-date="${r.date}"><svg viewBox="0 0 20 20" fill="none"><path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/></svg></button>
       <div class="todo-text${r.t.star ? ' hasstar' : ''}">${r.t.star ? `<span class="rstar-wrap">${STAR_SVG}</span>` : ''}<span>${escapeHtml(r.t.text)}</span></div>
-      ${r.carry ? `<span class="tag">${r.date.slice(5).replace('-','/')} 이월</span>` : ''}
+      ${r.carry ? `<span class="tag" title="이월">${r.date.slice(5).replace('-','/')}</span>` : ''}
     </div>`).join('');
   if(rows.length === 0) list = `<div class="home-more">할일 탭에서 오늘 할 일을 추가해보세요.</div>`;
   if(rows.length > MAX) list += `<div class="home-more">외 ${rows.length - MAX}개 · 할일 탭에서 보기</div>`;
@@ -2634,3 +2634,4 @@ $('trashLink').onclick = () => {
 
 </body>
 </html>
+

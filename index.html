@@ -801,6 +801,10 @@
   .bar > div{ height:100%; background:#E8B64C; border-radius:4px; }
   .home-todo{ display:flex; align-items:center; gap:10px; padding:5px 0; font-size:clamp(14.5px,3.9vw,16px); color:var(--ink); }
   .home-todo .todo-text{ cursor:default; flex:1; }
+  .home-todo .todo-text{ min-width:0; display:flex; align-items:center; overflow:hidden; }
+  .home-todo .todo-text > span:last-child{ display:block; flex:1; min-width:0; overflow-x:auto; white-space:nowrap; scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
+  .home-todo .todo-text > span:last-child::-webkit-scrollbar{ display:none; }
+  .home-todo .todo-text > span:last-child.fade{ -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent); mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent); }
   .home-todo.done .todo-check{ border-color:#C0503C; }
   .home-todo.done .todo-check svg{ display:block; }
   .home-todo.done .todo-text{ color:var(--ink-soft); text-decoration:line-through; }
@@ -1116,7 +1120,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-k</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-l</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1532,6 +1536,11 @@ function renderHome(){
   if(rows.length === 0) list = `<div class="home-more">할일 탭에서 오늘 할 일을 추가해보세요.</div>`;
   if(rows.length > MAX) list += `<div class="home-more">외 ${rows.length - MAX}개 · 할일 탭에서 보기</div>`;
   $('homeTodoList').innerHTML = list;
+  const fadeUpd = el => el.classList.toggle('fade', el.scrollWidth - el.clientWidth - el.scrollLeft > 2);
+  const fadeAll = () => $('homeTodoList').querySelectorAll('.home-todo .todo-text > span:last-child').forEach(fadeUpd);
+  $('homeTodoList').querySelectorAll('.home-todo .todo-text > span:last-child').forEach(el => el.addEventListener('scroll', () => fadeUpd(el), { passive: true }));
+  requestAnimationFrame(fadeAll);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fadeAll);
   $('homeTodoList').querySelectorAll('[data-home-toggle]').forEach(btn => {
     btn.onclick = () => {
       const id = btn.dataset.homeToggle, date = btn.dataset.date;

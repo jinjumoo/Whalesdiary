@@ -1128,7 +1128,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-q</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-r</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1614,18 +1614,18 @@ function renderHome(){
   const dateSet = new Set(active.map(e=>e.date));
   const now = new Date();
   const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-  const monthCount = active.filter(e=>{
-    const d = new Date(e.date + 'T00:00:00');
-    return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
-  }).length;
+  // 이번 달에 일기를 쓴 '날' 수 (같은 날 여러 편이어도 1일)
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-`;
+  const monthCount = new Set(active.filter(e => (e.date || '').startsWith(monthKey)).map(e => e.date)).size;
   $('homeMonthCount').textContent = monthCount;
   $('homeMonthDays').textContent = daysInMonth;
   const circ = 2 * Math.PI * 21;
   $('homeRing').setAttribute('stroke-dasharray', `${circ * Math.min(monthCount / daysInMonth, 1)} ${circ}`);
 
   // 연속 작성일
+  // 오늘 아직 안 썼으면 어제부터 이어서 센다 (오늘 쓰기 전에 0으로 끊기지 않게)
   let streak = 0;
-  for(let i = 0; dateSet.has(dateStrOffset(i)); i++) streak++;
+  for(let i = dateSet.has(dateStrOffset(0)) ? 0 : 1; dateSet.has(dateStrOffset(i)); i++) streak++;
   $('homeStreak').textContent = streak;
   let weekHtml = '';
   for(let i = 6; i >= 0; i--){

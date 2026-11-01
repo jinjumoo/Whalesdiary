@@ -464,6 +464,14 @@
     cursor: pointer;
     flex-shrink: 0;
   }
+  .todo-more{ background:none; border:none; color:#BFAF9B; font-size:20px; line-height:1; padding:0 2px; cursor:pointer; flex:none; letter-spacing:0; }
+  .repmark{ display:inline-flex; vertical-align:-1px; margin-left:6px; color:var(--ink); }
+  .todo-menu{ position:fixed; z-index:200; background:#FFFBEF; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); padding:2px 0; font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#766C60; }
+  .todo-menu div{ display:flex; align-items:center; gap:7px; padding:4px 14px; line-height:1.3; white-space:nowrap; cursor:pointer; }
+  .todo-menu div + div{ border-top:1px solid #E6DCC9; }
+  .todo-menu .danger{ color:#B6432E; }
+  .todo-skiptag{ font-family:'Noto Sans KR',sans-serif; font-size:10px; color:#B0A08A; white-space:nowrap; flex:none; }
+  .todo-item.skipped .todo-text{ color:var(--ink-soft); opacity:.7; }
   .todo-item{
     display: flex;
     align-items: center;
@@ -1120,7 +1128,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-m</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-p</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1419,6 +1427,7 @@ function subscribeTodos(){
   const d = new Date();
   $('todoDate').textContent = `${d.getMonth()+1}월 ${d.getDate()}일 ${days[d.getDay()]}요일`;
 
+  subscribeRepeat();
   unsubscribeTodos = db.collection('users').doc(currentUser.uid).collection('todos').onSnapshot((snap)=>{
     const map = {};
     snap.docs.forEach(doc => {
@@ -1426,7 +1435,9 @@ function subscribeTodos(){
       map[doc.id] = Array.isArray(data.items) ? data.items : [];
     });
     todosByDate = map;
+    todosLoaded = true;
     renderTodoList();
+    ensureRepeats();
   }, (err)=>{
     console.error(err);
     toast('할일 불러오기 실패: ' + (err.code || err.message || '알 수 없음'));
@@ -1445,24 +1456,128 @@ function setItems(date, items){
 }
 function saveTodos(){ setItems(todayStr(), todoItems); }
 
+// ---- 할일 ⋯ 메뉴 ----
+let todoMenuEl = null;
+function closeTodoMenu(){ if(todoMenuEl){ todoMenuEl.remove(); todoMenuEl = null; } }
+function openTodoMenu(btn){
+  closeTodoMenu();
+  const id = btn.dataset.more, date = btn.dataset.date, carry = !!btn.dataset.carry;
+  const cur = getItems(date).find(t => t.id === id);
+  if(!cur) return;
+  const m = document.createElement('div');
+  m.className = 'todo-menu';
+  m.innerHTML = `<div data-m="rep">${REP_SVG}<span>${cur.rep ? '매일 반복 끄기' : '매일 반복'}</span></div>` +
+    (carry ? `<div data-m="skip"><span>건너뛰기</span></div>` : '') +
+    `<div data-m="del" class="danger"><span>삭제</span></div>`;
+  document.body.appendChild(m);
+  const r = btn.getBoundingClientRect();
+  const w = m.offsetWidth, h = m.offsetHeight;
+  let left = Math.min(Math.max(8, r.right - w), window.innerWidth - w - 8);
+  let top = r.bottom + 2;
+  if(top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 2);
+  m.style.left = left + 'px'; m.style.top = top + 'px';
+  m.onclick = (ev) => {
+    ev.stopPropagation();
+    const k = ev.target.closest('[data-m]'); if(!k) return;
+    const act = k.dataset.m;
+    closeTodoMenu();
+    if(act === 'rep') toggleRepeat(date, id);
+    else if(act === 'skip'){
+      setItems(date, getItems(date).map(t => t.id === id ? { ...t, skip: true } : t));
+      renderTodoList();
+      toast('건너뛰었어요. 그날의 기록에는 남아 있어요.');
+    } else if(act === 'del'){
+      setItems(date, getItems(date).filter(t => t.id !== id));
+      renderTodoList();
+    }
+  };
+  todoMenuEl = m;
+}
+document.addEventListener('click', closeTodoMenu);
+window.addEventListener('scroll', closeTodoMenu, true);
+
+// ---- 매일 반복 할일 ----
+let repeatTpl = [];            // [{rid,text,star,spawned}]
+let repeatLoaded = false, todosLoaded = false;
+let unsubscribeRepeat = null;
+function repeatDocRef(){ return db.collection('users').doc(currentUser.uid).collection('meta').doc('repeat'); }
+function saveRepeat(){
+  repeatDocRef().set({ items: repeatTpl, updatedAt: Date.now() }).catch(err => {
+    console.error(err); toast('반복 설정 저장 실패: ' + (err.code || err.message || '알 수 없음'));
+  });
+}
+function subscribeRepeat(){
+  repeatLoaded = false;
+  unsubscribeRepeat = repeatDocRef().onSnapshot((snap) => {
+    const d = snap && snap.exists !== false && snap.data ? snap.data() : null;
+    repeatTpl = d && Array.isArray(d.items) ? d.items : [];
+    repeatLoaded = true;
+    ensureRepeats();
+  }, (err) => { console.error(err); repeatLoaded = true; });
+}
+// 오늘 날짜에 반복 할일을 하루 한 번 만들어 둔다 (오늘 지운 건 오늘 다시 생기지 않음)
+function ensureRepeats(){
+  if(!todosLoaded || !repeatLoaded) return;
+  const today = todayStr();
+  const items = getItems(today);
+  const add = [];
+  let tplChanged = false;
+  repeatTpl.forEach(tp => {
+    if((tp.spawned || '') >= today) return;
+    if(!items.some(i => i.rep === tp.rid)){
+      add.push({ id: Date.now().toString() + Math.random().toString(36).slice(2, 5), text: tp.text, done: false, star: !!tp.star, rep: tp.rid });
+    }
+    tp.spawned = today; tplChanged = true;
+  });
+  if(add.length) setItems(today, [...items, ...add]);
+  if(tplChanged) saveRepeat();
+  if(add.length) renderTodoList();
+}
+function toggleRepeat(date, id){
+  const cur = getItems(date).find(t => t.id === id);
+  if(!cur) return;
+  if(cur.rep){
+    repeatTpl = repeatTpl.filter(tp => tp.rid !== cur.rep);
+    setItems(date, getItems(date).map(t => t.id === id ? (({ rep, ...r }) => r)(t) : t));
+    toast('매일 반복을 껐어요.');
+  } else {
+    const rid = 'r' + Date.now().toString(36);
+    const today = todayStr();
+    repeatTpl = [...repeatTpl, { rid, text: cur.text, star: !!cur.star, spawned: date < today ? date : (date === today ? today : date) }];
+    setItems(date, getItems(date).map(t => t.id === id ? { ...t, rep: rid } : t));
+    toast('매일 반복으로 설정했어요. 이월되지 않고 매일 새로 만들어져요.');
+  }
+  saveRepeat();
+  renderTodoList();
+  ensureRepeats();
+}
+function syncRepeatTpl(date, id){
+  const cur = getItems(date).find(t => t.id === id);
+  if(!cur || !cur.rep) return;
+  const tp = repeatTpl.find(x => x.rid === cur.rep);
+  if(tp){ tp.text = cur.text; tp.star = !!cur.star; saveRepeat(); }
+}
+
 function overdueGroups(ref){
   const t = ref || todayStr();
   return Object.keys(todosByDate).filter(dt => dt < t).sort().reverse().map(dt => ({
     date: dt,
-    items: todosByDate[dt].filter(it => !it.done || keptDone.has(dt + '|' + it.id))
+    items: todosByDate[dt].filter(it => !it.rep && !it.skip && (!it.done || keptDone.has(dt + '|' + it.id)))
   })).filter(g => g.items.length > 0);
 }
 
-function todoRowHtml(date, t){
+const REP_SVG = '<svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5V8a3 3 0 0 1 3-3h8"/><path d="M12.5 2.5 15 5l-2.5 2.5"/><path d="M16 10.5V12a3 3 0 0 1-3 3H5"/><path d="M7.5 17.5 5 15l2.5-2.5"/></svg>';
+function todoRowHtml(date, t, carry){
   return `
-    <div class="todo-item${t.done ? ' done' : ''}" data-id="${escapeAttr(t.id)}" data-date="${date}">
+    <div class="todo-item${t.done ? ' done' : ''}${t.skip && !t.done ? ' skipped' : ''}" data-id="${escapeAttr(t.id)}" data-date="${date}">
       <span class="todo-grip" data-grip="${escapeAttr(t.id)}" data-date="${date}" aria-label="끌어서 순서 변경"><svg width="20" height="20" viewBox="0 0 20 20" fill="#BFAF9B"><circle cx="7" cy="5" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="7" cy="10" r="1.6"/><circle cx="13" cy="10" r="1.6"/><circle cx="7" cy="15" r="1.6"/><circle cx="13" cy="15" r="1.6"/></svg></span>
       <button class="todo-check" data-toggle="${escapeAttr(t.id)}" data-date="${date}"><svg viewBox="0 0 20 20" fill="none">
         <path d="M3.5 10.8 Q6 12.5 8.2 14.8 Q11.5 9.5 16.2 4.2" stroke="#B6432E" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" transform="rotate(-4 10 10)"/>
         <path d="M4 10 Q6.3 12.8 8 14.3 Q12 8.7 16 4.8" stroke="#C55B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" transform="rotate(2 10 10) translate(0.4 -0.3)"/>
       </svg></button>
-      <div class="todo-text hasstar" data-edit="${escapeAttr(t.id)}" data-date="${date}"><span class="rstar-wrap" data-unstar="${escapeAttr(t.id)}" data-date="${date}">${t.star ? STAR_SVG : STAR_EMPTY}</span><span>${escapeHtml(t.text)}</span></div>
-      <button class="todo-del" data-del="${escapeAttr(t.id)}" data-date="${date}">✕</button>
+      <div class="todo-text hasstar" data-edit="${escapeAttr(t.id)}" data-date="${date}"><span class="rstar-wrap" data-unstar="${escapeAttr(t.id)}" data-date="${date}">${t.star ? STAR_SVG : STAR_EMPTY}</span><span>${escapeHtml(t.text)}${t.rep ? `<span class="repmark" title="매일 반복">${REP_SVG}</span>` : ''}</span></div>
+      ${t.skip && !t.done ? '<span class="todo-skiptag">건너뜀</span>' : ''}
+      <button class="todo-more" data-more="${escapeAttr(t.id)}" data-date="${date}"${carry ? ' data-carry="1"' : ''} aria-label="더보기">⋯</button>
     </div>`;
 }
 
@@ -1585,7 +1700,7 @@ function renderTodoList(){
     html += `<div class="todo-carry-title">이어서 할 일</div>`;
     groups.forEach(g => {
       html += `<div class="todo-carry-date">${fmtDate(g.date)}에서 이월</div>`;
-      html += g.items.map(t => todoRowHtml(g.date, t)).join('');
+      html += g.items.map(t => todoRowHtml(g.date, t, true)).join('');
     });
     html += `<div class="todo-carry-title">${isToday ? '오늘의 할 일' : '이 날의 할 일'}</div>`;
   }
@@ -1643,14 +1758,10 @@ function renderTodoList(){
       g.onpointerup = end; g.onpointercancel = end;
     };
   });
-  el.querySelectorAll('[data-del]').forEach(btn => {
-    btn.onclick = () => {
-      const id = btn.dataset.del, date = btn.dataset.date;
-      setItems(date, getItems(date).filter(t => t.id !== id));
-      renderTodoList();
-    };
+  el.querySelectorAll('[data-more]').forEach(btn => {
+    btn.onclick = (ev) => { ev.stopPropagation(); openTodoMenu(btn); };
   });
-  const toggleStar = (date, id) => { setItems(date, getItems(date).map(t => t.id === id ? { ...t, star: !t.star } : t)); renderTodoList(); };
+  const toggleStar = (date, id) => { setItems(date, getItems(date).map(t => t.id === id ? { ...t, star: !t.star } : t)); syncRepeatTpl(date, id); renderTodoList(); };
   el.querySelectorAll('[data-edit]').forEach(div => {
     div.onclick = (ev) => {
       if(ev.target.closest('[data-unstar]')){ ev.stopPropagation(); toggleStar(div.dataset.date, div.dataset.edit); return; }
@@ -1672,6 +1783,7 @@ function renderTodoList(){
         const newText = input.value.trim();
         if(newText){
           setItems(date, getItems(date).map(t => t.id === id ? {...t, text: newText} : t));
+          syncRepeatTpl(date, id);
         } else {
           setItems(date, getItems(date).filter(t => t.id !== id));
         }
@@ -1735,6 +1847,8 @@ auth.onAuthStateChanged((user)=>{
     currentUser = null;
     if(unsubscribeEntries){ unsubscribeEntries(); unsubscribeEntries = null; }
     if(unsubscribeTodos){ unsubscribeTodos(); unsubscribeTodos = null; }
+    if(unsubscribeRepeat){ unsubscribeRepeat(); unsubscribeRepeat = null; }
+    repeatTpl = []; repeatLoaded = false; todosLoaded = false;
     if(unsubscribeTrips){ unsubscribeTrips(); unsubscribeTrips = null; }
     trips = []; openTripId = null; tripSheet = null;
     entries = [];
@@ -1873,7 +1987,7 @@ function renderCalendar(){
   for(let d = 1; d <= daysInMonth; d++){
     const ds = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const hasEntry = entryDates.has(ds);
-    const pending = ds <= todayDs && (todosByDate[ds] || []).some(t => !t.done);
+    const pending = ds <= todayDs && (todosByDate[ds] || []).some(t => !t.done && !t.skip && !(t.rep && ds < todayDs));
     const cell = document.createElement('div');
     cell.className = 'cal-day' + (hasEntry ? ' has-entry' : '') + (ds === todayDs ? ' today' : '');
     cell.innerHTML = hasEntry
@@ -2634,4 +2748,3 @@ $('trashLink').onclick = () => {
 
 </body>
 </html>
-

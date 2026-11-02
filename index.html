@@ -1086,7 +1086,9 @@
     .tr-line .tr-text{ order:3; flex:1 1 100%; }
     .tr-line .tr-t2{ order:1; width:auto; font-size:11px; }
     .tr-line .tr-cost{ order:2; margin-left:0; font-size:11px; }
-    .tr-line .tr-t2.ph, .tr-line .tr-cost.ph{ display:none; }
+    .tr-line .tr-t2.ph, .tr-line .tr-cost.ph{ font-size:0; padding:2px 0; }
+    .tr-line .tr-t2.ph::after{ content:'+ 시간'; font-size:11px; }
+    .tr-line .tr-cost.ph::after{ content:'+ 비용'; font-size:11px; }
   }
   /* 할일: 날짜 이동 / 순서 편집 */
   .todo-datebar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
@@ -1128,7 +1130,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-s</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-t</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 

@@ -1128,7 +1128,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-r</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-s</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2104,12 +2104,24 @@ function openEditor(id, dateStr){
   updateCharCount();
   $('photoInput').value = '';
   $('overlay').classList.add('open');
+  editorSnapStr = editorSnap();
   // 화면이 보이는 상태에서 높이를 계산해야 긴 글이 잘리지 않음
   autoGrowTextarea($('entryBody'));
   requestAnimationFrame(() => autoGrowTextarea($('entryBody')));
   setTimeout(() => autoGrowTextarea($('entryBody')), 150);
 }
 
+let editorSnapStr = '';
+function editorSnap(){
+  return JSON.stringify([$('entryDate').value, $('entryTitle').value, $('entryBody').value, selectedMood, curTags, curPhoto ? curPhoto.length : 0]);
+}
+// 닫기 버튼: 쓰던 내용이 있으면 한 번 물어본다
+function requestCloseEditor(){
+  if($('overlay').classList.contains('open') && editorSnap() !== editorSnapStr){
+    if(!confirm('저장하지 않은 내용이 있어요. 저장하지 않고 닫을까요?')) return;
+  }
+  closeEditor();
+}
 function closeEditor(){
   $('overlay').classList.remove('open');
   editingId = null;
@@ -2605,8 +2617,8 @@ $('calNext').onclick = () => {
   renderCalendar();
 };
 
-$('closeSheet').onclick = closeEditor;
-$('overlay').onclick = (ev) => { if(ev.target.id==='overlay') closeEditor(); };
+$('closeSheet').onclick = requestCloseEditor;
+// 빈 곳을 눌러도 일기 쓰던 창이 닫히지 않도록 (바깥 클릭 닫기 제거)
 $('entryBody').addEventListener('input', (ev) => { autoGrowTextarea(ev.target); updateCharCount(); });
 $('entryDate').addEventListener('click', () => openDatePicker($('entryDate').value, ds => { $('entryDate').value = ds; updateDateLabel(); }));
 $('searchInput').addEventListener('input', (ev) => { searchQuery = ev.target.value; renderList(); });

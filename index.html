@@ -1046,6 +1046,7 @@
   .tr-ex .c{ margin:0 auto 0 4px; }
   .tr-ex .c{ cursor:pointer; text-decoration:underline dotted;  font-family:'Noto Sans KR',sans-serif; font-size:11px; color:#7A6A53; }
   .tr-logcard{ border:1.5px solid #D9CDBB; border-radius:14px; padding:12px 14px; margin-bottom:10px; cursor:pointer; }
+  .tr-whale{ height:30px; width:auto; flex:none; display:block; }
   .tr-logcard.empty-day{ border-style:dashed; text-align:center; color:#7A6A53; font-size:14px; }
   .tr-logcard .pv{ font-size:14px; line-height:1.6; color:#7A6A53; margin-top:6px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
   .tr-badge{ display:inline-block; font-family:'Noto Sans KR',sans-serif; font-size:11px; background:#FFE3A3; border:1.5px solid #BFAF9B; border-radius:9px; padding:1px 7px; color:var(--ink); margin-left:6px; font-weight:400; vertical-align:middle; }
@@ -1130,7 +1131,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-t</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-u</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2204,7 +2205,7 @@ function tripCardHtml(t, hl, label){
     ? `기록 ${Object.keys(t.logs || {}).length}일 · ${fmtMoney(t, sp)}`
     : `${t.budget > 0 ? `예산 ${fmtMoney(t, sp)} / ${fmtMoney(t, t.budget)}` : `지출 ${fmtMoney(t, sp)}`} · 계획 ${planCount(t)}개`;
   return `<div class="tr-card${hl ? ' hl' : ''}" data-act="open" data-id="${escA(t.id)}">
-    <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? '<span style="font-size:20px">🐋</span>' : ''}</div>
+    <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? `<img class="tr-whale" src="${WHALE_STAMP_SRC}" alt="">` : ''}</div>
     <div class="tr-name">${esc(t.name || '이름 없는 여행')}</div>
     <div class="tr-sm">${fmtRange(t)}${t.people > 1 ? ` · ${t.people}명` : ''}</div>
     ${t.focus ? `<div class="tr-focus-line"><span class="lbl">테마</span>${esc(t.focus)}</div>` : ''}
@@ -2295,7 +2296,7 @@ function logHtml(t){
   return days.map((ds, i) => {
     const l = (t.logs || {})[ds];
     if(!l) return `<div class="tr-logcard empty-day" data-act="openLog" data-date="${ds}">${i + 1}일차 · ${fmtMD(ds)}<br><span class="tr-sm">＋ 이 날 기록하기</span></div>`;
-    return `<div class="tr-logcard" data-act="openLog" data-date="${ds}"><div class="tr-row2"><div><div class="tr-name" style="font-size:16px">${esc(l.title || '제목 없음')}</div><div class="tr-sm">${i + 1}일차 · ${fmtMD(ds)} ${moodEmoji(l.mood)}</div></div><span style="font-size:22px">🐋</span></div>${l.body ? `<div class="pv">${esc(l.body)}</div>` : ''}</div>`;
+    return `<div class="tr-logcard" data-act="openLog" data-date="${ds}"><div class="tr-row2"><div><div class="tr-name" style="font-size:16px">${esc(l.title || '제목 없음')}</div><div class="tr-sm">${i + 1}일차 · ${fmtMD(ds)} ${moodEmoji(l.mood)}</div></div><img class="tr-whale" src="${WHALE_STAMP_SRC}" alt=""></div>${l.body ? `<div class="pv">${esc(l.body)}</div>` : ''}</div>`;
   }).join('');
 }
 

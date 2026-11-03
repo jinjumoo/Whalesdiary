@@ -1131,7 +1131,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-u</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-v</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1304,6 +1304,14 @@ let searchQuery = '';
 let activeTab = 'home';
 let trashOpen = false;
 
+// 일기를 쓴 날 = 일반 일기 + 내용이 있는 여행 기록
+function writtenDates(){
+  const set = new Set(activeEntries().map(e => e.date));
+  (typeof trips !== 'undefined' ? trips : []).forEach(t => {
+    Object.entries(t.logs || {}).forEach(([d, l]) => { if(l && (l.title || l.body)) set.add(d); });
+  });
+  return set;
+}
 function activeEntries(){
   return entries.filter(e => !e.deletedAt);
 }
@@ -1614,12 +1622,12 @@ function renderWeekChart(){
 function renderHome(){
   if(!$('homeView')) return;
   const active = activeEntries();
-  const dateSet = new Set(active.map(e=>e.date));
+  const dateSet = writtenDates();
   const now = new Date();
   const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
   // 이번 달에 일기를 쓴 '날' 수 (같은 날 여러 편이어도 1일)
   const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-`;
-  const monthCount = new Set(active.filter(e => (e.date || '').startsWith(monthKey)).map(e => e.date)).size;
+  const monthCount = [...dateSet].filter(d => (d || '').startsWith(monthKey)).length;
   $('homeMonthCount').textContent = monthCount;
   $('homeMonthDays').textContent = daysInMonth;
   const circ = 2 * Math.PI * 21;
@@ -1978,7 +1986,7 @@ function renderCalendar(){
   const first = new Date(calYear, calMonth, 1);
   const startWeekday = first.getDay();
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  const entryDates = new Set(activeEntries().map(e=>e.date));
+  const entryDates = writtenDates();
   const todayDs = todayStr();
 
   $('calTitle').textContent = `${calYear}년 ${calMonth + 1}월`;
@@ -2149,7 +2157,7 @@ const esc = escapeHtml, escA = escapeAttr;
 
 function tripsCol(){ return db.collection('users').doc(currentUser.uid).collection('trips'); }
 function normTrip(t){ return { name:'', start:'', end:'', cur:'¥', budget:0, people:1, focus:'', plan:{}, pack:[], exp:[], logs:{}, createdAt:0, ...t }; }
-function refreshTripViews(){ renderTrip(); renderMoodFilters(); renderList(); }
+function refreshTripViews(){ renderTrip(); renderMoodFilters(); renderList(); renderHome(); renderCalendar(); }
 function subscribeTrips(){
   unsubscribeTrips = tripsCol().onSnapshot(snap => {
     trips = snap.docs.map(d => normTrip({ id:d.id, ...d.data() }));

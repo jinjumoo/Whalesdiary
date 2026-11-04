@@ -898,7 +898,7 @@
 
   /* 일기 쓰기: 전체 화면 */
   .overlay{ background:var(--bg); align-items:stretch; justify-content:center; overflow-y:auto; }
-  .sheet{ width:100%; max-width:640px; max-height:none; min-height:100%; margin:0 auto; background:transparent; border:none; border-radius:0; padding:calc(env(safe-area-inset-top) + 18px) 20px 28px; overflow:visible; }
+  .sheet{ width:100%; max-width:640px; max-height:none; min-height:100%; align-self:flex-start; margin:0 auto; background:transparent; border:none; border-radius:0; padding:calc(env(safe-area-inset-top) + 18px) 20px calc(28px + var(--kb, 0px)); overflow:visible; }
   @media (min-width:700px){ .sheet{ width:100%; max-width:640px; border-radius:0; border:none; padding:32px 20px; max-height:none; } }
   .sheet-bar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
   .sheet-close{ background:none; border:none; font-family:inherit; font-size:17px; color:#7A6A53; padding:8px 4px; cursor:pointer; }
@@ -1131,7 +1131,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-v</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-w</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2135,6 +2135,7 @@ function requestCloseEditor(){
 }
 function closeEditor(){
   $('overlay').classList.remove('open');
+  $('overlay').style.setProperty('--kb', '0px');
   editingId = null;
 }
 
@@ -2630,7 +2631,65 @@ $('calNext').onclick = () => {
 
 $('closeSheet').onclick = requestCloseEditor;
 // 빈 곳을 눌러도 일기 쓰던 창이 닫히지 않도록 (바깥 클릭 닫기 제거)
-$('entryBody').addEventListener('input', (ev) => { autoGrowTextarea(ev.target); updateCharCount(); });
+$('entryBody').addEventListener('input', (ev) => { autoGrowTextarea(ev.target); updateCharCount(); keepCaretVisible(); });
+
+// ===== 휴대폰 자판에 커서가 가려지지 않게 =====
+// 자판이 올라오면 보이는 화면(visualViewport)이 줄어든다. 커서(입력 중인 줄)가 그 아래로 내려가면 화면을 밀어 올린다.
+function kbHeight(){
+  const vv = window.visualViewport;
+  if(!vv) return 0;
+  return Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+}
+function updateKbPad(){
+  const ov = $('overlay');
+  ov.style.setProperty('--kb', (ov.classList.contains('open') ? kbHeight() : 0) + 'px');
+}
+// 글상자 안에서 커서가 있는 줄의 아래쪽 위치(화면 기준 y)
+function caretBottomY(ta){
+  const cs = getComputedStyle(ta);
+  const m = document.createElement('div');
+  ['fontFamily','fontSize','fontWeight','fontStyle','lineHeight','letterSpacing','wordSpacing','textIndent','textTransform',
+   'paddingTop','paddingRight','paddingBottom','paddingLeft','borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth','boxSizing','tabSize']
+    .forEach(k => { m.style[k] = cs[k]; });
+  m.style.position = 'absolute'; m.style.visibility = 'hidden'; m.style.left = '-9999px'; m.style.top = '0';
+  m.style.width = ta.offsetWidth + 'px';
+  m.style.whiteSpace = 'pre-wrap'; m.style.overflowWrap = 'break-word'; m.style.wordBreak = cs.wordBreak;
+  m.textContent = ta.value.slice(0, ta.selectionEnd);
+  const mark = document.createElement('span'); mark.textContent = '\u200b'; m.appendChild(mark);
+  document.body.appendChild(m);
+  const y = mark.offsetTop + mark.offsetHeight;
+  m.remove();
+  return ta.getBoundingClientRect().top + y - ta.scrollTop;
+}
+function keepCaretVisible(){
+  const ov = $('overlay'), ta = $('entryBody');
+  if(!ov.classList.contains('open') || document.activeElement !== ta) return;
+  updateKbPad();
+  const vv = window.visualViewport;
+  const viewBottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 24;   // 자판 바로 위 여유 24px
+  const viewTop = (vv ? vv.offsetTop : 0) + 64;                                      // 위쪽 '닫기/저장' 줄 아래
+  const y = caretBottomY(ta);
+  if(y > viewBottom) ov.scrollTop += Math.ceil(y - viewBottom);
+  else if(y < viewTop) ov.scrollTop -= Math.ceil(viewTop - y);
+}
+function keepFocusedVisible(el){
+  const ov = $('overlay');
+  if(!ov.classList.contains('open')) return;
+  updateKbPad();
+  const vv = window.visualViewport;
+  const viewBottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 16;
+  const r = el.getBoundingClientRect();
+  if(r.bottom > viewBottom) ov.scrollTop += Math.ceil(r.bottom - viewBottom);
+}
+$('entryBody').addEventListener('keyup', keepCaretVisible);
+$('entryBody').addEventListener('click', () => setTimeout(keepCaretVisible, 50));
+$('entryBody').addEventListener('focus', () => { [120, 350, 700].forEach(t => setTimeout(keepCaretVisible, t)); });
+$('tagInput').addEventListener('focus', (ev) => { const el = ev.target; [120, 350, 700].forEach(t => setTimeout(() => keepFocusedVisible(el), t)); });
+if(window.visualViewport){
+  const onVV = () => { updateKbPad(); keepCaretVisible(); };
+  window.visualViewport.addEventListener('resize', onVV);
+  window.visualViewport.addEventListener('scroll', updateKbPad);
+}
 $('entryDate').addEventListener('click', () => openDatePicker($('entryDate').value, ds => { $('entryDate').value = ds; updateDateLabel(); }));
 $('searchInput').addEventListener('input', (ev) => { searchQuery = ev.target.value; renderList(); });
 

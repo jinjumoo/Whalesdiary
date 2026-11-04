@@ -1154,6 +1154,9 @@
   .lg-ex.trip{ cursor:pointer; }
   .lg-tb{ font:10px 'Noto Sans KR',sans-serif; font-style:normal; background:#FFE3A3; border:1px solid #BFAF9B; border-radius:6px; padding:0 5px; color:#5a5046; margin-left:2px; white-space:nowrap; }
   .lg-go{ color:#BFAF9B; font-size:15px; padding:0 4px; flex:none; }
+  .tr-card{ position:relative; }
+  .tr-whale-abs{ position:absolute; top:8px; right:12px; }
+  .tr-card.past .tr-name{ padding-right:60px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -1182,7 +1185,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-c</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-d</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2280,8 +2283,8 @@ function tripCardHtml(t, hl, label){
   const meta = past
     ? `기록 ${Object.keys(t.logs || {}).length}일 · ${fmtMoney(t, sp)}`
     : `${t.budget > 0 ? `예산 ${fmtMoney(t, sp)} / ${fmtMoney(t, t.budget)}` : `지출 ${fmtMoney(t, sp)}`} · 계획 ${planCount(t)}개`;
-  return `<div class="tr-card${hl ? ' hl' : ''}" data-act="open" data-id="${escA(t.id)}">
-    <div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}${past ? `<img class="tr-whale" src="${WHALE_STAMP_SRC}" alt="">` : ''}</div>
+  return `<div class="tr-card${hl ? ' hl' : ''}${past ? ' past' : ''}" data-act="open" data-id="${escA(t.id)}">
+    ${past ? `<img class="tr-whale tr-whale-abs" src="${WHALE_STAMP_SRC}" alt="">` : ''}${label || dd ? `<div class="tr-row2"><span class="tr-sm">${label || '&nbsp;'}</span>${dd ? `<span class="tr-dday">${dd}</span>` : ''}</div>` : ''}
     <div class="tr-name">${esc(t.name || '이름 없는 여행')}</div>
     <div class="tr-sm">${fmtRange(t)}${t.people > 1 ? ` · ${t.people}명` : ''}</div>
     ${t.focus ? `<div class="tr-focus-line"><span class="lbl">테마</span>${esc(t.focus)}</div>` : ''}

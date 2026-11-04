@@ -1103,6 +1103,54 @@
   .todo-tool-btn{ font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#7A6A53; background:none; border:none; padding:4px 2px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
   .todo-grip{ flex-shrink:0; width:20px; height:24px; display:flex; align-items:center; justify-content:center; touch-action:none; cursor:grab; }
   .todo-item.dragging{ position:relative; z-index:5; background:#FFF6DA; border:1.5px solid #BFAF9B; border-radius:12px; box-shadow:0 6px 14px rgba(120,100,70,.18); transition:none; }
+
+  /* ===== 가계 ===== */
+  @media (max-width:480px){ .tab-bar{ gap:4px; padding-left:12px; } .tab-btn{ padding-left:11px; padding-right:11px; } }
+  .lg-tx{ display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #E6DCCB; margin:4px 2px 10px; position:relative; }
+  .lg-tabs{ display:flex; gap:16px; font-family:'Noto Sans KR',sans-serif; font-size:13px; color:#B0A08A; }
+  .lg-tabs span{ padding:4px 0; margin-bottom:-1px; cursor:pointer; }
+  .lg-tabs .on{ color:#5a5046; border-bottom:2px solid #E9B949; }
+  .lg-cur{ border:1px solid #D9CDBB; border-radius:6px; padding:2px 9px; font:12px/1.2 'Noto Sans KR',sans-serif; color:#5a5046; background:#FFFBEF; margin-bottom:4px; cursor:pointer; white-space:nowrap; }
+  .lg-menu-back{ position:fixed; inset:0; z-index:40; }
+  .lg-menu{ position:absolute; right:0; top:100%; z-index:41; background:#FFFBEF; border:1.5px solid #BFAF9B; border-radius:10px; box-shadow:0 6px 16px rgba(120,100,70,.2); padding:4px 0; min-width:150px; font:13px 'Noto Sans KR',sans-serif; color:#5a5046; }
+  .lg-menu div{ display:flex; gap:6px; padding:8px 12px 8px 10px; cursor:pointer; }
+  .lg-menu div::before{ content:''; width:0; }
+  .lg-menu .sep{ border-top:1px solid #E6DCCB; margin-top:4px; color:#7A6A53; }
+  .lg-wd{ display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font:12px 'Noto Sans KR',sans-serif; color:#7A6A53; margin-bottom:2px; }
+  .lg-cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px 0; text-align:center; margin-bottom:6px; }
+  .lg-cal .d{ min-height:46px; padding-top:4px; font-size:14px; color:#766C60; cursor:pointer; border-bottom:2px solid transparent; }
+  .lg-cal .d small{ display:block; font:9px 'Noto Sans KR',sans-serif; letter-spacing:-.4px; color:#B6432E; margin-top:3px; white-space:nowrap; }
+  .lg-cal .d small sup{ color:#7C8FB0; font-size:8px; margin-left:1px; }
+  .lg-cal .d.today{ color:#B6432E; }
+  .lg-cal .d.sel{ border-bottom-color:#E9B949; font-weight:700; }
+  .lg-daycard{ border-top:1px solid #E6DCCB; padding-top:8px; margin-top:6px; }
+  .lg-dayh{ display:flex; justify-content:space-between; align-items:baseline; font-size:14px; color:#5a5046; margin:12px 2px 2px; }
+  .lg-daycard .lg-dayh{ margin-top:0; }
+  .lg-dayh span:last-child{ font-size:13px; }
+  .lg-ex{ display:flex; align-items:center; gap:8px; padding:7px 2px; border-bottom:1px solid #E6DCC9; font-size:14px; color:var(--ink); }
+  .lg-ex .c{ font:11px 'Noto Sans KR',sans-serif; color:#7A6A53; width:30px; flex:none; cursor:pointer; }
+  .lg-ex .t{ flex:1; min-width:0; word-break:break-word; }
+  .lg-ex b{ font-weight:400; white-space:nowrap; cursor:text; }
+  .lg-ex b i{ font-style:normal; cursor:pointer; }
+  .lg-empty{ text-align:center; color:#B0A08A; font-size:13.5px; padding:16px 0; }
+  .lg-foot{ font:11px/1.6 'Noto Sans KR',sans-serif; color:#B0A08A; text-align:right; margin-top:8px; }
+  .lg-note{ font:11px 'Noto Sans KR',sans-serif; color:#B6432E; text-align:right; margin-top:2px; }
+  .lg-note u{ cursor:pointer; }
+  .lg-more{ font:11px 'Noto Sans KR',sans-serif; color:#B0A08A; text-align:right; padding-top:4px; }
+  .lg-catrow{ display:flex; align-items:center; gap:8px; margin:10px 2px; font:13px 'Noto Sans KR',sans-serif; color:#5a5046; }
+  .lg-catrow > span:first-child{ width:34px; } .lg-catrow > span:last-child{ min-width:96px; text-align:right; }
+  .lg-catrow em{ font-style:normal; color:#B0A08A; font-size:11px; margin-left:4px; }
+  .lg-catrow .tr-bar{ flex:1; margin:0; }
+  .lg-sheet-box{ background:#FFFBEF; border:1.5px solid #BFAF9B; border-radius:16px; padding:18px; width:100%; max-width:340px; max-height:86vh; overflow:auto; }
+  .lg-sh-t{ font-size:17px; color:#5a5046; margin-bottom:12px; }
+  .lg-rate{ display:flex; align-items:center; gap:8px; margin:8px 0; font-size:14px; color:#5a5046; }
+  .lg-rate input{ flex:1; min-width:0; background:transparent; border:none; border-bottom:1px solid var(--line); padding:6px 2px; font:15px var(--font-body); color:var(--ink); outline:none; }
+  .lg-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .lg-chips span{ border:1px solid #D9CDBB; border-radius:8px; padding:2px 8px; font-size:13px; }
+  .lg-chips b{ color:#BFAF9B; cursor:pointer; margin-left:4px; font-weight:400; }
+  .lg-sh-btns{ display:flex; gap:8px; margin-top:18px; }
+  .lg-sh-btns button{ flex:1; padding:10px; border:1.5px solid #D9CDBB; background:transparent; border-radius:10px; font:14px var(--font-body); color:#5a5046; cursor:pointer; }
+  .lg-sh-btns .ok{ background:#FFE3A3; border-color:#BFAF9B; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -1131,7 +1179,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.33-w</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-a</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -1139,6 +1187,7 @@
     <button class="tab-btn active" id="tabHomeBtn">오늘</button>
     <button class="tab-btn" id="tabTodoBtn">할일</button>
     <button class="tab-btn" id="tabListBtn">일기</button>
+    <button class="tab-btn" id="tabLedgerBtn">가계</button>
     <button class="tab-btn" id="tabTripBtn">여행</button>
   </div>
 
@@ -1179,6 +1228,10 @@
           <div class="home-head link" data-goto="list"><b>오늘의 일기</b><span id="homeEntryMeta"></span></div>
           <div id="homeEntryBody"></div>
         </div>
+        <div class="home-card">
+          <div class="home-head link" data-goto="ledger"><b>오늘의 지출</b><span id="homeLgMeta"></span></div>
+          <div id="homeLgList"></div>
+        </div>
       </div>
 
       <div class="tab-swipe-panel" id="todoView">
@@ -1214,12 +1267,18 @@
         <div id="trashList"></div>
       </div>
 
+      <div class="tab-swipe-panel" id="ledgerView">
+        <div id="ledgerRoot"></div>
+      </div>
+
       <div class="tab-swipe-panel" id="tripView">
         <div id="tripRoot"></div>
       </div>
     </div>
   </div>
 
+
+<div id="lgSheet" class="dp-back" style="display:none;"></div>
 
 <div class="overlay" id="overlay">
   <div class="sheet">
@@ -1621,6 +1680,7 @@ function renderWeekChart(){
 
 function renderHome(){
   if(!$('homeView')) return;
+  if(typeof renderHomeLedger === 'function') renderHomeLedger();
   const active = activeEntries();
   const dateSet = writtenDates();
   const now = new Date();
@@ -1857,6 +1917,7 @@ auth.onAuthStateChanged((user)=>{
     subscribeEntries();
     subscribeTodos();
     subscribeTrips();
+    subscribeLedger();
   } else {
     currentUser = null;
     if(unsubscribeEntries){ unsubscribeEntries(); unsubscribeEntries = null; }
@@ -1865,6 +1926,9 @@ auth.onAuthStateChanged((user)=>{
     repeatTpl = []; repeatLoaded = false; todosLoaded = false;
     if(unsubscribeTrips){ unsubscribeTrips(); unsubscribeTrips = null; }
     trips = []; openTripId = null; tripSheet = null;
+    if(unsubscribeLedger){ unsubscribeLedger(); unsubscribeLedger = null; }
+    if(unsubscribeLgSet){ unsubscribeLgSet(); unsubscribeLgSet = null; }
+    ledger = []; lgSet = { cur:'¥', base:'₩', rates:{}, custom:[] }; lgAddCur = '';
     entries = [];
     todoItems = []; todosByDate = {};
     $('authScreen').style.display = 'flex';
@@ -2387,7 +2451,7 @@ function inlineEdit(el, cb, opt){
   if(opt.w){ inp.style.width = opt.w; inp.style.flex = 'none'; }
   el.replaceWith(inp); inp.focus(); inp.select();
   let done = false;
-  const fin = (save) => { if(done) return; done = true; const v = inp.value.trim(); if(save && v !== old && (v || opt.allowEmpty)) cb(v); else renderTrip(); };
+  const fin = (save) => { if(done) return; done = true; const v = inp.value.trim(); if(save && v !== old && (v || opt.allowEmpty)) cb(v); else (opt.rerender || renderTrip)(); };
   inp.onblur = () => fin(true);
   inp.onkeydown = (e) => { if(e.key === 'Enter') fin(true); if(e.key === 'Escape') fin(false); };
 }
@@ -2572,13 +2636,226 @@ function tripLogEntries(){
   return out;
 }
 
-const TAB_ORDER = ['home', 'todo', 'list', 'trip'];
+
+// ===== 가계 =====
+const LG_CATS = ['식비','교통','쇼핑','생활','건강','문화','기타'];
+const LG_DEF_CURS = [['¥','엔'],['₩','원'],['$','달러'],['€','유로']];
+let ledger = [];
+let unsubscribeLedger = null, unsubscribeLgSet = null;
+let lgSet = { cur:'¥', base:'₩', rates:{}, custom:[] };      // cur: 보는 통화('ALL'이면 전체 환산) / rates: {'¥': 9.3} = 1¥ → 기준통화
+let lgMonth = todayStr().slice(0, 7), lgSub = 'day', lgSel = todayStr(), lgAddCur = '', lgMenu = false, lgSheetOpen = false, lgFocus = null;
+function ledgerCol(){ return db.collection('users').doc(currentUser.uid).collection('ledger'); }
+function lgSetRef(){ return db.collection('users').doc(currentUser.uid).collection('meta').doc('ledger'); }
+function lgCurs(){ return [...LG_DEF_CURS, ...(lgSet.custom || []).map(c => [c, ''])]; }
+function lgCurName(c){ const f = lgCurs().find(x => x[0] === c); return f && f[1] ? f[1] : ''; }
+function subscribeLedger(){
+  unsubscribeLedger = ledgerCol().onSnapshot(snap => {
+    ledger = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    renderLedger(); renderHome();
+  }, err => { console.error(err); toast('가계 불러오기 실패: ' + (err.code || err.message || '알 수 없음')); });
+  unsubscribeLgSet = lgSetRef().onSnapshot(snap => {
+    const d = snap && snap.exists !== false && snap.data ? snap.data() : null;
+    if(d) lgSet = { cur:d.cur || '¥', base:d.base || '₩', rates:d.rates || {}, custom:d.custom || [] };
+    renderLedger(); renderHome();
+  }, err => console.error(err));
+}
+function saveLgSet(){
+  renderLedger(); renderHome();
+  lgSetRef().set({ ...lgSet, updatedAt: Date.now() }).catch(err => { console.error(err); toast('가계 설정 저장 실패: ' + (err.code || err.message || '알 수 없음')); });
+}
+function saveLg(e){
+  const i = ledger.findIndex(x => x.id === e.id);
+  if(i >= 0) ledger[i] = e; else ledger.push(e);
+  const { id, ...data } = e;
+  ledgerCol().doc(id).set({ ...data, updatedAt: Date.now() }).catch(err => { console.error(err); toast('가계 저장 실패: ' + (err.code || err.message || '알 수 없음')); });
+  renderLedger(); renderHome();
+}
+function lgNum(n){ n = n || 0; return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 2 }); }
+function lgFmt(cur, n){ return `${cur}${lgNum(n)}`; }
+function lgCell(n){ return n >= 1000000 ? Math.round(n / 10000).toLocaleString() + '만' : Math.round(n).toLocaleString(); }
+function lgConv(e){ if(e.cur === lgSet.base) return e.amount; const r = Number(lgSet.rates[e.cur]); return r > 0 ? e.amount * r : null; }
+// 보기 통화 기준 금액 (다른 통화는 null)
+function lgView(e){ return lgSet.cur === 'ALL' ? lgConv(e) : (e.cur === lgSet.cur ? e.amount : null); }
+function lgViewCur(){ return lgSet.cur === 'ALL' ? lgSet.base : lgSet.cur; }
+function lgSum(list){ let s = 0; list.forEach(e => { const v = lgView(e); if(v != null) s += v; }); return s; }
+function lgByCur(list){ const m = {}; list.forEach(e => { m[e.cur] = (m[e.cur] || 0) + e.amount; }); return Object.entries(m); }
+function lgTotText(list){
+  if(lgSet.cur === 'ALL' && list.length){
+    const miss = list.some(e => lgConv(e) == null);
+    if(!miss) return lgFmt(lgSet.base, Math.round(lgSum(list)));
+  }
+  return lgByCur(list).map(([c, n]) => lgFmt(c, n)).join(' · ');
+}
+function lgMonthList(){ return ledger.filter(e => (e.date || '').startsWith(lgMonth)); }
+function lgSort(a, b){ return (a.createdAt || 0) - (b.createdAt || 0); }
+function lgRowHtml(e){
+  const id = escA(e.id);
+  return `<div class="lg-ex"><span class="c" data-act="lgEditCat" data-id="${id}">${esc(e.cat)}</span><span class="t"><span data-act="lgEditText" data-id="${id}">${esc(e.text)}</span></span><b><i data-act="lgEditCur" data-id="${id}">${esc(e.cur)}</i><span data-act="lgEditAmt" data-id="${id}">${lgNum(e.amount)}</span></b><button class="tr-x" data-act="lgDel" data-id="${id}">✕</button></div>`;
+}
+function lgDayCard(ds){
+  const list = ledger.filter(e => e.date === ds).sort(lgSort);
+  const head = `<div class="lg-dayh"><span>${fmtMD(ds)}</span><span>${list.length ? esc(lgTotText(list)) : ''}</span></div>`;
+  return head + (list.length ? list.map(lgRowHtml).join('') : '<div class="lg-empty">기록이 없어요</div>');
+}
+function renderLedger(){
+  const root = $('ledgerRoot'); if(!root) return;
+  const keep = {}; ['lgText','lgAmt'].forEach(k => { const x = $(k); if(x) keep[k] = x.value; });
+  const act = document.activeElement && document.activeElement.id;
+  const [y, m] = lgMonth.split('-').map(Number);
+  const nDays = new Date(y, m, 0).getDate();
+  if(!lgSel.startsWith(lgMonth)) lgSel = lgMonth === todayStr().slice(0, 7) ? todayStr() : lgMonth + '-01';
+  if(!lgAddCur) lgAddCur = lgViewCur();
+  const list = lgMonthList();
+  const vc = lgViewCur();
+  const label = lgSet.cur === 'ALL' ? `전체 환산 ${lgSet.base}` : `${lgSet.cur} ${lgCurName(lgSet.cur)}`.trim();
+  let h = `<div class="cal-header"><button class="cal-nav" data-act="lgPrev">‹</button><div class="cal-title">${y}년 ${m}월</div><button class="cal-nav" data-act="lgNext">›</button></div>`;
+  h += `<div class="lg-tx"><div class="lg-tabs">${[['list','내역'],['day','일별'],['cat','분류']].map(([k, n]) => `<span class="${lgSub === k ? 'on' : ''}" data-act="lgSub" data-k="${k}">${n}</span>`).join('')}</div><span class="lg-cur" data-act="lgMenu">${esc(label)} ▾</span>`;
+  if(lgMenu){
+    h += `<div class="lg-menu-back" data-act="lgMenuClose"></div><div class="lg-menu">${lgCurs().map(([c, n]) => `<div data-act="lgCur" data-v="${escA(c)}">${lgSet.cur === c ? '✓' : ''}<span>${esc(c)} ${esc(n)}</span></div>`).join('')}<div data-act="lgCur" data-v="ALL">${lgSet.cur === 'ALL' ? '✓' : ''}<span>전체 환산 (${esc(lgSet.base)})</span></div><div class="sep" data-act="lgSheet"><span>통화 · 환율 설정</span></div></div>`;
+  }
+  h += '</div>';
+  const noteMiss = () => {
+    if(lgSet.cur !== 'ALL') return '';
+    const miss = [...new Set(list.filter(e => lgConv(e) == null).map(e => e.cur))];
+    return miss.length ? `<div class="lg-note">환율 미설정: ${esc(miss.join(' '))} (제외됨) · <u data-act="lgSheet">환율 입력</u></div>` : '';
+  };
+  const foot = () => {
+    const tot = lgSum(list);
+    const isCur = lgMonth === todayStr().slice(0, 7);
+    const div = isCur ? Number(todayStr().slice(8)) : nDays;
+    const others = lgSet.cur === 'ALL' ? [] : lgByCur(list.filter(e => e.cur !== lgSet.cur));
+    return `<div class="lg-foot">이번 달 ${esc(lgFmt(vc, Math.round(tot)))} · 일 평균 ${esc(lgFmt(vc, Math.round(tot / div)))}${lgSet.cur === 'ALL' ? ' (환산)' : ''}${others.length ? `<br>그 외 ${esc(others.map(([c, n]) => lgFmt(c, n)).join(' · '))}` : ''}</div>${noteMiss()}`;
+  };
+  const addRow = () => `<div class="tr-add"><input id="lgDate" class="w84" type="text" readonly data-act="lgPickDate" value="${fmtMD(lgSel).replace(/ \(.\)$/, '')}"><select id="lgCat">${LG_CATS.map(c => `<option>${c}</option>`).join('')}</select><select id="lgCurSel">${lgCurs().map(([c]) => `<option${c === lgAddCur ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select><span style="flex-basis:100%;height:0"></span><input id="lgText" class="grow" type="text" placeholder="내용"><input id="lgAmt" class="w84" type="text" inputmode="decimal" placeholder="금액"><button class="tr-addbtn" data-act="lgAdd">+</button></div>`;
+  if(lgSub === 'list'){
+    const dates = [...new Set(list.map(e => e.date))].sort().reverse();
+    h += dates.length ? dates.map(ds => lgDayCard(ds)).join('') : '<div class="lg-empty">이번 달 기록이 없어요</div>';
+    h += foot() + addRow();
+  } else if(lgSub === 'day'){
+    const first = new Date(y, m - 1, 1).getDay();
+    let cells = '<div class="lg-wd"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="lg-cal">';
+    for(let i = 0; i < first; i++) cells += '<div></div>';
+    const td = todayStr();
+    for(let d = 1; d <= nDays; d++){
+      const ds = `${lgMonth}-${String(d).padStart(2, '0')}`;
+      const dl = list.filter(e => e.date === ds);
+      const v = lgSum(dl), other = lgSet.cur !== 'ALL' && dl.some(e => e.cur !== lgSet.cur);
+      const sm = dl.length && (v > 0 || other) ? `<small>${v > 0 ? lgCell(v) : ''}${other ? '<sup>+</sup>' : ''}</small>` : '';
+      cells += `<div class="d${ds === lgSel ? ' sel' : ''}${ds === td ? ' today' : ''}" data-act="lgSelDay" data-date="${ds}">${d}${sm}</div>`;
+    }
+    h += cells + '</div><div class="lg-daycard">' + lgDayCard(lgSel) + '</div>' + foot() + addRow();
+  } else {
+    const g = {};
+    list.forEach(e => { const v = lgView(e); if(v != null) g[e.cat] = (g[e.cat] || 0) + v; });
+    const arr = Object.entries(g).sort((a, b) => b[1] - a[1]), tot = arr.reduce((s, x) => s + x[1], 0);
+    h += arr.length ? arr.map(([c, n]) => `<div class="lg-catrow"><span>${esc(c)}</span><div class="tr-bar"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div><span>${esc(lgFmt(vc, Math.round(n)))} <em>${tot ? Math.round(n / tot * 100) : 0}%</em></span></div>`).join('') : '<div class="lg-empty">표시할 지출이 없어요</div>';
+    h += foot();
+  }
+  root.innerHTML = h;
+  Object.entries(keep).forEach(([k, v]) => { if($(k)) $(k).value = v; });
+  if(lgFocus && $(lgFocus)){ $(lgFocus).focus(); lgFocus = null; }
+  else if(act && keep[act] !== undefined && $(act)) $(act).focus();
+  renderLgSheet();
+}
+function renderLgSheet(){
+  const el = $('lgSheet'); if(!el) return;
+  if(!lgSheetOpen){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  const curs = lgCurs().map(x => x[0]);
+  el.style.display = 'flex';
+  el.innerHTML = `<div class="lg-sheet-box"><div class="lg-sh-t">통화 · 환율</div>
+    <div class="field-lab">기준 통화 (전체 환산에 쓰는 통화)</div>
+    <select id="lgsBase" class="tr-field" style="width:100%">${curs.map(c => `<option${c === lgSet.base ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select>
+    <div class="field-lab" style="margin-top:14px">환율 (직접 입력한 값만 사용)</div>
+    <div id="lgsRates">${curs.filter(c => c !== lgSet.base).map(c => `<div class="lg-rate">1 ${esc(c)} = <input type="text" inputmode="decimal" data-cur="${escA(c)}" value="${escA(lgSet.rates[c] || '')}" placeholder="0"> <span class="lgsb">${esc(lgSet.base)}</span></div>`).join('')}</div>
+    <div class="field-lab" style="margin-top:14px">통화 추가 (기호 1~4자)</div>
+    <div class="lg-rate"><input type="text" id="lgsNew" maxlength="4" placeholder="예: £, ฿, 元"><button class="tr-addbtn" data-lgs="add" type="button">+</button></div>
+    ${(lgSet.custom || []).length ? `<div class="lg-chips">${lgSet.custom.map(c => `<span>${esc(c)} <b data-lgs="del" data-c="${escA(c)}">✕</b></span>`).join('')}</div>` : ''}
+    <div class="lg-sh-btns"><button data-lgs="close" type="button">취소</button><button class="ok" data-lgs="save" type="button">저장</button></div></div>`;
+}
+function lgReadSheet(){
+  const b = $('lgsBase'); if(!b) return;
+  const rates = { ...lgSet.rates };
+  document.querySelectorAll('#lgsRates input').forEach(i => { const n = toNum(i.value); if(n > 0) rates[i.dataset.cur] = n; else delete rates[i.dataset.cur]; });
+  lgSet.base = b.value; lgSet.rates = rates;
+}
+$('lgSheet').addEventListener('click', (ev) => {
+  const t = ev.target.closest('[data-lgs]');
+  if(!t){ if(ev.target === $('lgSheet')) { lgSheetOpen = false; renderLgSheet(); } return; }
+  const k = t.dataset.lgs;
+  if(k === 'close'){ lgSheetOpen = false; return renderLgSheet(); }
+  if(k === 'save'){ lgReadSheet(); lgSheetOpen = false; if(lgSet.cur === lgSet.base) lgAddCur = lgSet.cur; return saveLgSet(); }
+  if(k === 'add'){
+    lgReadSheet();
+    const v = ($('lgsNew').value || '').trim();
+    if(v && !lgCurs().some(x => x[0] === v)) lgSet.custom = [...(lgSet.custom || []), v];
+    return renderLgSheet();
+  }
+  if(k === 'del'){ lgReadSheet(); const c = t.dataset.c; lgSet.custom = lgSet.custom.filter(x => x !== c); delete lgSet.rates[c]; if(lgSet.cur === c) lgSet.cur = '¥'; if(lgSet.base === c) lgSet.base = '₩'; return renderLgSheet(); }
+});
+$('lgSheet').addEventListener('change', (ev) => { if(ev.target.id === 'lgsBase'){ lgReadSheet(); renderLgSheet(); } });
+
+function lgAct(act, el){
+  const id = el.dataset.id;
+  const e = id ? ledger.find(x => x.id === id) : null;
+  const upd = (patch) => saveLg({ ...e, ...patch });
+  switch(act){
+    case 'lgPrev': case 'lgNext': {
+      const [y, m] = lgMonth.split('-').map(Number), d = new Date(y, m - 1 + (act === 'lgNext' ? 1 : -1), 1);
+      lgMonth = dStr(d).slice(0, 7); return renderLedger();
+    }
+    case 'lgSub': lgSub = el.dataset.k; return renderLedger();
+    case 'lgMenu': lgMenu = !lgMenu; return renderLedger();
+    case 'lgMenuClose': lgMenu = false; return renderLedger();
+    case 'lgCur': lgMenu = false; lgSet.cur = el.dataset.v; lgAddCur = lgViewCur(); return saveLgSet();
+    case 'lgSheet': lgMenu = false; lgSheetOpen = true; return renderLedger();
+    case 'lgSelDay': lgSel = el.dataset.date; return renderLedger();
+    case 'lgPickDate': return openDatePicker(lgSel, d => { lgSel = d; lgMonth = d.slice(0, 7); renderLedger(); });
+    case 'lgAdd': {
+      const amount = toNum($('lgAmt').value);
+      if(!amount){ $('lgAmt').focus(); return; }
+      const cat = $('lgCat').value, cur = $('lgCurSel').value;
+      lgAddCur = cur; lgFocus = 'lgText';
+      $('lgAmt').value = ''; const txt = $('lgText').value.trim(); $('lgText').value = '';
+      if(lgSet.cur !== 'ALL' && lgSet.cur !== cur){ lgSet.cur = cur; saveLgSet(); }
+      return saveLg({ id:newId(), date:lgSel, cat, text:txt || cat, amount, cur, createdAt:Date.now() });
+    }
+    case 'lgDel': return lgDelete(id);
+    case 'lgEditText': return inlineEdit(el, v => upd({ text:v }), { rerender: renderLedger });
+    case 'lgEditAmt': return inlineEdit(el, v => { const n = toNum(v); if(n) upd({ amount:n }); else renderLedger(); }, { init:String(e.amount), num:true, rerender: renderLedger });
+    case 'lgEditCat': return upd({ cat: LG_CATS[(LG_CATS.indexOf(e.cat) + 1) % LG_CATS.length] });
+    case 'lgEditCur': { const cs = lgCurs().map(x => x[0]); return upd({ cur: cs[(cs.indexOf(e.cur) + 1) % cs.length] }); }
+  }
+}
+function lgDelete(id){
+  ledger = ledger.filter(x => x.id !== id);
+  ledgerCol().doc(id).delete().catch(err => { console.error(err); toast('삭제 실패: ' + (err.code || err.message || '알 수 없음')); });
+  renderLedger(); renderHome();
+}
+$('ledgerRoot').addEventListener('click', (ev) => {
+  const el = ev.target.closest('[data-act]');
+  if(el && $('ledgerRoot').contains(el)) lgAct(el.dataset.act, el);
+});
+$('ledgerRoot').addEventListener('change', (ev) => { if(ev.target.id === 'lgCurSel') lgAddCur = ev.target.value; });
+$('ledgerRoot').addEventListener('keydown', (ev) => {
+  if(ev.key === 'Enter' && (ev.target.id === 'lgText' || ev.target.id === 'lgAmt')){ ev.preventDefault(); lgAct('lgAdd', ev.target); }
+});
+// 오늘 탭의 '오늘의 지출' 카드
+function renderHomeLedger(){
+  const meta = $('homeLgMeta'), body = $('homeLgList'); if(!meta || !body) return;
+  const list = ledger.filter(e => e.date === todayStr()).sort(lgSort);
+  meta.textContent = list.length ? lgTotText(list) : '';
+  if(!list.length){ body.innerHTML = '<div class="lg-empty" style="padding:6px 0">아직 지출이 없어요</div>'; return; }
+  body.innerHTML = list.slice(0, 3).map(e => `<div class="lg-ex"><span class="c">${esc(e.cat)}</span><span class="t">${esc(e.text)}</span><b>${esc(lgFmt(e.cur, e.amount))}</b></div>`).join('') + (list.length > 3 ? `<div class="lg-more">외 ${list.length - 3}건</div>` : '');
+}
+
+const TAB_ORDER = ['home', 'todo', 'list', 'ledger', 'trip'];
 let tabSwipeLock = false;
 
 function updateTabButtons(tab){
   $('tabHomeBtn').classList.toggle('active', tab === 'home');
   $('tabListBtn').classList.toggle('active', tab === 'list');
   $('tabTodoBtn').classList.toggle('active', tab === 'todo');
+  $('tabLedgerBtn').classList.toggle('active', tab === 'ledger');
   $('tabTripBtn').classList.toggle('active', tab === 'trip');
 }
 
@@ -2595,6 +2872,7 @@ function switchTab(tab){
 $('tabHomeBtn').onclick = () => switchTab('home');
 $('tabListBtn').onclick = () => switchTab('list');
 $('tabTodoBtn').onclick = () => switchTab('todo');
+$('tabLedgerBtn').onclick = () => switchTab('ledger');
 $('tabTripBtn').onclick = () => switchTab('trip');
 document.querySelectorAll('.home-head[data-goto]').forEach(h => { h.onclick = () => switchTab(h.dataset.goto); });
 

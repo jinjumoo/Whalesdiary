@@ -1151,6 +1151,9 @@
   .lg-sh-btns{ display:flex; gap:8px; margin-top:18px; }
   .lg-sh-btns button{ flex:1; padding:10px; border:1.5px solid #D9CDBB; background:transparent; border-radius:10px; font:14px var(--font-body); color:#5a5046; cursor:pointer; }
   .lg-sh-btns .ok{ background:#FFE3A3; border-color:#BFAF9B; }
+  .lg-ex.trip{ cursor:pointer; }
+  .lg-tb{ font:10px 'Noto Sans KR',sans-serif; font-style:normal; background:#FFE3A3; border:1px solid #BFAF9B; border-radius:6px; padding:0 5px; color:#5a5046; margin-left:2px; white-space:nowrap; }
+  .lg-go{ color:#BFAF9B; font-size:15px; padding:0 4px; flex:none; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -1179,7 +1182,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-b</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-c</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2222,7 +2225,7 @@ const esc = escapeHtml, escA = escapeAttr;
 
 function tripsCol(){ return db.collection('users').doc(currentUser.uid).collection('trips'); }
 function normTrip(t){ return { name:'', start:'', end:'', cur:'¥', budget:0, people:1, focus:'', plan:{}, pack:[], exp:[], logs:{}, createdAt:0, ...t }; }
-function refreshTripViews(){ renderTrip(); renderMoodFilters(); renderList(); renderHome(); renderCalendar(); }
+function refreshTripViews(){ renderTrip(); renderMoodFilters(); renderList(); renderHome(); renderCalendar(); if(typeof renderLedger === 'function') renderLedger(); }
 function subscribeTrips(){
   unsubscribeTrips = tripsCol().onSnapshot(snap => {
     trips = snap.docs.map(d => normTrip({ id:d.id, ...d.data() }));
@@ -2638,7 +2641,7 @@ function tripLogEntries(){
 
 
 // ===== 가계 =====
-const LG_CATS = ['식비','카페','교통','쇼핑','생활','건강','문화','기타'];
+const LG_CATS = ['식비','카페','교통','쇼핑','생활','건강','문화','숙박','기타'];
 const LG_DEF_CURS = [['¥','엔'],['₩','원'],['$','달러'],['€','유로']];
 let ledger = [];
 let unsubscribeLedger = null, unsubscribeLgSet = null;
@@ -2686,14 +2689,21 @@ function lgTotText(list){
   }
   return lgByCur(list).map(([c, n]) => lgFmt(c, n)).join(' · ');
 }
-function lgMonthList(){ return ledger.filter(e => (e.date || '').startsWith(lgMonth)); }
+// 가계 내역 + 여행 지출(읽기 전용)
+function lgAll(){
+  const tr = [];
+  trips.forEach(t => (t.exp || []).forEach(x => tr.push({ id:'trip:' + t.id + ':' + x.id, date:x.date, cat:x.cat || '기타', text:x.text || x.cat || '', amount:x.amount || 0, cur:t.cur || '¥', createdAt:0, tripId:t.id, tripName:t.name })));
+  return [...ledger, ...tr];
+}
+function lgMonthList(){ return lgAll().filter(e => (e.date || '').startsWith(lgMonth)); }
 function lgSort(a, b){ return (a.createdAt || 0) - (b.createdAt || 0); }
 function lgRowHtml(e){
   const id = escA(e.id);
+  if(e.tripId) return `<div class="lg-ex trip" data-act="lgOpenTrip" data-tid="${escA(e.tripId)}"><span class="c">${esc(e.cat)}</span><span class="t">${esc(e.text)} <em class="lg-tb">여행</em></span><b>${esc(lgFmt(e.cur, e.amount))}</b><span class="lg-go">›</span></div>`;
   return `<div class="lg-ex"><span class="c" data-act="lgEditCat" data-id="${id}">${esc(e.cat)}</span><span class="t"><span data-act="lgEditText" data-id="${id}">${esc(e.text)}</span></span><b><i data-act="lgEditCur" data-id="${id}">${esc(e.cur)}</i><span data-act="lgEditAmt" data-id="${id}">${lgNum(e.amount)}</span></b><button class="tr-x" data-act="lgDel" data-id="${id}">✕</button></div>`;
 }
 function lgDayCard(ds){
-  const list = ledger.filter(e => e.date === ds).sort(lgSort);
+  const list = lgAll().filter(e => e.date === ds).sort(lgSort);
   const head = `<div class="lg-dayh"><span>${fmtMD(ds)}</span><span>${list.length ? esc(lgTotText(list)) : ''}</span></div>`;
   return head + (list.length ? list.map(lgRowHtml).join('') : '<div class="lg-empty">기록이 없어요</div>');
 }
@@ -2749,6 +2759,8 @@ function renderLedger(){
     list.forEach(e => { const v = lgView(e); if(v != null) g[e.cat] = (g[e.cat] || 0) + v; });
     const arr = Object.entries(g).sort((a, b) => b[1] - a[1]), tot = arr.reduce((s, x) => s + x[1], 0);
     h += arr.length ? arr.map(([c, n]) => `<div class="lg-catrow"><span>${esc(c)}</span><div class="tr-bar"><i style="width:${tot ? Math.round(n / tot * 100) : 0}%"></i></div><span>${esc(lgFmt(vc, Math.round(n)))} <em>${tot ? Math.round(n / tot * 100) : 0}%</em></span></div>`).join('') : '<div class="lg-empty">표시할 지출이 없어요</div>';
+    const tv = list.filter(e => e.tripId).reduce((a, e) => a + (lgView(e) || 0), 0);
+    if(tv > 0) h += `<div class="lg-foot" style="margin-top:12px">그중 여행 ${esc(lgFmt(vc, Math.round(tv)))}</div>`;
     h += foot();
   }
   root.innerHTML = h;
@@ -2819,6 +2831,7 @@ function lgAct(act, el){
       if(lgSet.cur !== 'ALL' && lgSet.cur !== cur){ lgSet.cur = cur; saveLgSet(); }
       return saveLg({ id:newId(), date:lgSel, cat, text:txt || cat, amount, cur, createdAt:Date.now() });
     }
+    case 'lgOpenTrip': { if(!tripById(el.dataset.tid)) return; openTripId = el.dataset.tid; tripSub = 'budget'; tripDayIdx = 0; renderTrip(); return switchTab('trip'); }
     case 'lgDel': return lgDelete(id);
     case 'lgEditText': return inlineEdit(el, v => upd({ text:v }), { rerender: renderLedger });
     case 'lgEditAmt': return inlineEdit(el, v => { const n = toNum(v); if(n) upd({ amount:n }); else renderLedger(); }, { init:String(e.amount), num:true, rerender: renderLedger });
@@ -2842,7 +2855,7 @@ $('ledgerRoot').addEventListener('keydown', (ev) => {
 // 오늘 탭의 '오늘의 지출' 카드
 function renderHomeLedger(){
   const meta = $('homeLgMeta'), body = $('homeLgList'); if(!meta || !body) return;
-  const list = ledger.filter(e => e.date === todayStr()).sort(lgSort);
+  const list = lgAll().filter(e => e.date === todayStr()).sort(lgSort);
   meta.textContent = list.length ? lgTotText(list) : '';
   if(!list.length){ body.innerHTML = '<div class="lg-empty" style="padding:6px 0">아직 지출이 없어요</div>'; return; }
   body.innerHTML = list.slice(0, 3).map(e => `<div class="lg-ex"><span class="c">${esc(e.cat)}</span><span class="t">${esc(e.text)}</span><b>${esc(lgFmt(e.cur, e.amount))}</b></div>`).join('') + (list.length > 3 ? `<div class="lg-more">외 ${list.length - 3}건</div>` : '');

@@ -1185,7 +1185,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-d</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-e</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2312,6 +2312,19 @@ function tripDetailHtml(t){
     ${t.focus ? `<div class="tr-focus"><span class="lbl">${FOCUS_LABEL}</span><span class="txt">${esc(t.focus)}</span></div>` : ''}
     <div class="tr-subs">${subs.map(([k, l]) => `<button class="tr-chip${tripSub === k ? ' on' : ''}" data-act="sub" data-k="${k}">${l}</button>`).join('')}</div>${body}`;
 }
+// 시간 문자열 → 분 (해석 불가면 null). '10:30', '9시', '오후 3:20', '3pm' 지원
+function planMin(v){
+  const m = String(v || '').toLowerCase().match(/(\d{1,2})\s*(?:[:：시h]\s*(\d{1,2})?)?/);
+  if(!m) return null;
+  let h = +m[1], mi = +(m[2] || 0);
+  if(/오후|pm/.test(String(v).toLowerCase()) && h < 12) h += 12;
+  if(/오전|am/.test(String(v).toLowerCase()) && h === 12) h = 0;
+  return h > 24 || mi > 59 ? null : h * 60 + mi;
+}
+// 시간 있는 일정은 시간순, 시간 없는 일정은 뒤로 (같은 시간·시간 없음은 기존 순서 유지)
+function sortPlan(list){
+  return list.map((x, i) => ({ x, i, m: planMin(x.time) })).sort((a, b) => (a.m == null) - (b.m == null) || (a.m != null && a.m - b.m) || a.i - b.i).map(o => o.x);
+}
 function planHtml(t){
   const days = tripDays(t);
   if(!days.length) return `<div class="tr-empty">여행 기간을 먼저 정해주세요.</div>`;
@@ -2483,12 +2496,12 @@ function tripAct(act, el){
       if(!text){ $('plText').focus(); return; }
       const item = { id:newId(), time:$('plTime').value.trim(), text, cost:toNum($('plCost').value), done:false };
       tripFocus = 'plText';
-      return upd({ plan: { ...t.plan, [ds]: [...(t.plan[ds] || []), item] } });
+      return upd({ plan: { ...t.plan, [ds]: sortPlan([...(t.plan[ds] || []), item]) } });
     }
     case 'togPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, done: !x.done } : x) } });
     case 'delPlan': return upd({ plan: { ...t.plan, [ds]: t.plan[ds].filter(x => x.id !== id) } });
     case 'editPlan': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, text: v } : x) } }));
-    case 'editPlanTime': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, time: v } : x) } }), { init: (t.plan[ds].find(x => x.id === id) || {}).time || '', allowEmpty: true, ph: '10:30', w: '64px' });
+    case 'editPlanTime': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: sortPlan(t.plan[ds].map(x => x.id === id ? { ...x, time: v } : x)) } }), { init: (t.plan[ds].find(x => x.id === id) || {}).time || '', allowEmpty: true, ph: '10:30', w: '64px' });
     case 'editPlanCost': return inlineEdit(el, v => upd({ plan: { ...t.plan, [ds]: t.plan[ds].map(x => x.id === id ? { ...x, cost: toNum(v) } : x) } }), { init: String((t.plan[ds].find(x => x.id === id) || {}).cost || ''), allowEmpty: true, num: true, ph: '비용', w: '80px' });
     case 'editCat': return inlineEdit(el, v => upd({ pack: t.pack.map(x => x.cat === el.dataset.cat ? { ...x, cat: v } : x) }));
     case 'editExpText': return inlineEdit(el, v => upd({ exp: t.exp.map(x => x.id === id ? { ...x, text: v } : x) }));

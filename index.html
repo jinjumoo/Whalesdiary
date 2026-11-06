@@ -1185,7 +1185,7 @@
     </div>
   </header>
   <div class="header-meta">
-    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-e</span></div>
+    <div class="sync-status"><span id="syncStatus"></span><span style="margin-left:8px;opacity:.6">v10.34-f</span></div>
     <button class="logout-link" id="logoutBtn">로그아웃</button>
   </div>
 
@@ -2584,6 +2584,7 @@ function renderTripSheet(){
     requestAnimationFrame(() => autoGrowTextarea(ta));
   }
   $('tripOverlay').classList.add('open');
+  updateKbPad();
 }
 function openTripSheet(id){
   const t = id ? tripById(id) : null, td = todayStr();
@@ -2948,8 +2949,10 @@ function kbHeight(){
   return Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
 }
 function updateKbPad(){
-  const ov = $('overlay');
-  ov.style.setProperty('--kb', (ov.classList.contains('open') ? kbHeight() : 0) + 'px');
+  ['overlay', 'tripOverlay'].forEach(id => {
+    const ov = $(id);
+    ov.style.setProperty('--kb', (ov.classList.contains('open') ? kbHeight() : 0) + 'px');
+  });
 }
 // 글상자 안에서 커서가 있는 줄의 아래쪽 위치(화면 기준 y)
 function caretBottomY(ta){
@@ -2969,8 +2972,10 @@ function caretBottomY(ta){
   return ta.getBoundingClientRect().top + y - ta.scrollTop;
 }
 function keepCaretVisible(){
-  const ov = $('overlay'), ta = $('entryBody');
-  if(!ov.classList.contains('open') || document.activeElement !== ta) return;
+  // 일기 쓰기 창(entryBody) 또는 여행 일기 창(tlBody) 중 입력 중인 곳
+  let ov = $('overlay'), ta = $('entryBody');
+  if(document.activeElement !== ta){ ov = $('tripOverlay'); ta = $('tlBody'); }
+  if(!ta || !ov.classList.contains('open') || document.activeElement !== ta) return;
   updateKbPad();
   const vv = window.visualViewport;
   const viewBottom = (vv ? vv.offsetTop + vv.height : window.innerHeight) - 24;   // 자판 바로 위 여유 24px
@@ -2980,7 +2985,7 @@ function keepCaretVisible(){
   else if(y < viewTop) ov.scrollTop -= Math.ceil(viewTop - y);
 }
 function keepFocusedVisible(el){
-  const ov = $('overlay');
+  const ov = el.closest('#tripOverlay') ? $('tripOverlay') : $('overlay');
   if(!ov.classList.contains('open')) return;
   updateKbPad();
   const vv = window.visualViewport;
@@ -2988,6 +2993,14 @@ function keepFocusedVisible(el){
   const r = el.getBoundingClientRect();
   if(r.bottom > viewBottom) ov.scrollTop += Math.ceil(r.bottom - viewBottom);
 }
+// 여행 일기(tlBody)는 열 때마다 다시 만들어지므로 바깥 창에서 이벤트를 받는다
+$('tripOverlay').addEventListener('input', (ev) => { if(ev.target.id === 'tlBody'){ autoGrowTextarea(ev.target); keepCaretVisible(); } });
+$('tripOverlay').addEventListener('keyup', (ev) => { if(ev.target.id === 'tlBody') keepCaretVisible(); });
+$('tripOverlay').addEventListener('click', (ev) => { if(ev.target.id === 'tlBody') setTimeout(keepCaretVisible, 50); });
+$('tripOverlay').addEventListener('focusin', (ev) => {
+  if(ev.target.id === 'tlBody') [120, 350, 700].forEach(t => setTimeout(keepCaretVisible, t));
+  else if(ev.target.matches('input')){ const el = ev.target; [120, 350, 700].forEach(t => setTimeout(() => keepFocusedVisible(el), t)); }
+});
 $('entryBody').addEventListener('keyup', keepCaretVisible);
 $('entryBody').addEventListener('click', () => setTimeout(keepCaretVisible, 50));
 $('entryBody').addEventListener('focus', () => { [120, 350, 700].forEach(t => setTimeout(keepCaretVisible, t)); });
